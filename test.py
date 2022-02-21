@@ -12,9 +12,8 @@ def calibrate():
     objpoints = [] # 3d point in real world space
     imgpoints = [] # 2d points in image plane.
     images = glob.glob('*.png')
-    images = [cv2.resize(cv2.imread(i), cv2.imread(images[0]).shape[:2][::-1]) for i in images]
     for fname in images:
-        img = fname
+        img = cv2.imread(fname)
         if _img_shape == None:
             _img_shape = img.shape[:2]
         else:
@@ -60,6 +59,6 @@ def undistort(img, K, D, DIM):
     return undistorted_img
 
 K, D, DIM = calibrate()
-img = undistort(cv2.resize(cv2.imread('val.png'), cv2.imread('img1.png').shape[:2][::-1]), K, D, DIM)
+img = undistort(cv2.imread('val.jpg'), K, D, DIM)
 cv2.imwrite('val2.png', img)
 

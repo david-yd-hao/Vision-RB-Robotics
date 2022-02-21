@@ -6,7 +6,7 @@ _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 
 #out = cv2.VideoWriter('output_1030.avi', cv2.VideoWriter_fourcc(*"MJPG"), 20.0, (1016,760))
-
+imagenumber = 0
 if _capture.isOpened(): 
 
     _rval, _frame  = _capture.read()
@@ -39,8 +39,11 @@ if __name__ == "__main__":
     while(True):
         if cv2.waitKey(1) == 27:
             break
-        if cv2.waitKey(1) == 67:
-            cv2.imwrite('image1.png', _frame)
+        if cv2.waitKey(1) == 32:
+            imagenumber += 1
+            name = str(imagenumber)
+            cv2.imwrite('imageb%s.png'%name, _frame)
+
         cv2.imshow("frame", get_frame())
         #out.write(get_frame())
     _capture.release()
