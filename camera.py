@@ -42,7 +42,7 @@ if __name__ == "__main__":
         if cv2.waitKey(1) == 32:
             imagenumber += 1
             name = str(imagenumber)
-            cv2.imwrite('imageb%s.png'%name, _frame)
+            cv2.imwrite('test_image%s.png'%name, _frame)
 
         cv2.imshow("frame", get_frame())
         #out.write(get_frame())
