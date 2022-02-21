@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import os
 import glob
+
+
 def calibrate():
     CHECKERBOARD = (6,9)
     subpix_criteria = (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -59,8 +61,11 @@ def undistort(img, K, D, DIM):
     undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_DEFAULT)
     return undistorted_img
 
-K, D, DIM = calibrate()
-print(K, D, DIM)
-img = undistort(cv2.imread('val.jpg'), K, D, DIM)
-cv2.imwrite('val2.png', img)
 
+# calibrate camera, output parameter, and undistort val.jpg
+
+if __name__ == "__main__":
+    K, D, DIM = calibrate()
+    print(K, D, DIM)
+    img = undistort(cv2.imread('val.jpg'), K, D, DIM)
+    cv2.imwrite('val2.png', img)
