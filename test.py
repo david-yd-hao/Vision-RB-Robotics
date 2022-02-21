@@ -12,6 +12,7 @@ def calibrate():
     objpoints = [] # 3d point in real world space
     imgpoints = [] # 2d points in image plane.
     images = glob.glob('*.png')
+    print(images)
     for fname in images:
         img = cv2.imread(fname)
         if _img_shape == None:
@@ -55,10 +56,11 @@ def calibrate():
 def undistort(img, K, D, DIM):
     h,w = img.shape[:2]
     map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv2.CV_16SC2)
-    undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+    undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_DEFAULT)
     return undistorted_img
 
 K, D, DIM = calibrate()
+print(K, D, DIM)
 img = undistort(cv2.imread('val.jpg'), K, D, DIM)
 cv2.imwrite('val2.png', img)
 
