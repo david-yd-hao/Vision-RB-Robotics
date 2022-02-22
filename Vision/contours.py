@@ -5,7 +5,7 @@ def get_contour(pic):
     im = pic
     # Convert to graycsale
     imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-    imgray = get_sobel_edge(imgray)
+    imgray = get_canny_edge(imgray)
     ret, thresh = cv2.threshold(imgray, 230, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     return contours
@@ -31,6 +31,6 @@ def get_canny_edge(pic):
     # image_sharp = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
 
     # Canny Edge Detection
-    edges = cv2.Canny(image=img_blur, threshold1=100, threshold2=200)
+    edges = cv2.Canny(image=img_blur, threshold1=60, threshold2=200)
 
     return edges
