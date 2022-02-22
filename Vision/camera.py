@@ -1,6 +1,7 @@
 import cv2
 import threading
 import calibrate
+import contours
 import numpy as np
 
 # select camera and video out
@@ -59,7 +60,10 @@ if __name__ == "__main__":
             name = str(imagenumber)
             cv2.imwrite('imaged%s.png'%name, calibrate.undistort(_frame, K2, D2, DIM2))
 
-        cv2.imshow("frame", calibrate.undistort(get_frame(), K2, D2, DIM2))
+        current_frame = calibrate.undistort(get_frame(), K2, D2, DIM2)
+        current_contour = contours.get_contour(current_frame)
+        cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), 3)
+        cv2.imshow("frame", current_frame)
         #out.write(get_frame())
     _capture.release()
     # out.release()
