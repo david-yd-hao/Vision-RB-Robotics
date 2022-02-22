@@ -7,12 +7,14 @@ import numpy as np
 import poly as pl
 import imutils
 import corners
-
+import matplotlib.pyplot as plt
 # select camera and video out
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 # out = cv2.VideoWriter('output_1030.avi', cv2.VideoWriter_fourcc(*"MJPG"), 20.0, (1016,760))
-
+_npzfile = np.load('cache.npz')
+#K2 = _npzfile['mtx']
+#D2 = _npzfile['dist']
 # undistortion parameters
 K2 = np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]])
 D2 = np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]])
@@ -56,6 +58,7 @@ def get_grey(copy_=True):
 
 
 if __name__ == "__main__":
+    
     while(True):
         if cv2.waitKey(1) == 27:
             break
@@ -64,17 +67,20 @@ if __name__ == "__main__":
             name = str(imagenumber)
             cv2.imwrite('imaged%s.png'%name, calibrate.undistort(_frame, K2, D2, DIM2))
 
-        current_frame = calibrate.undistort(get_frame(), K2, D2, DIM2)
-        current_frame = current_frame[600:759, 0:300]
-
+        current_frame = calibrate.undistort_fisheye(get_frame(), K2, D2, DIM2)
+        #current_frame = current_frame[600:759, 0:300]
+        blank_image = np.zeros(shape=current_frame.shape, dtype=np.uint8)
 
         # gets and draws boundary of contours. 
         current_contour = contours.get_contour(current_frame)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
 
         # get and draws corner dots
-        current_frame = corners.draw_corners(current_frame)
+        plist, current_frame = corners.draw_corners(current_frame)
+        current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         cv2.imshow("frame", current_frame)
+        cv2.imshow('dots', pl.draw_blank(blank_image, plist))
+
         #out.write(get_frame())
     _capture.release()
     # out.release()

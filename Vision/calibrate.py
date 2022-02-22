@@ -55,13 +55,14 @@ def calibrate():
     D=np.array(D)
     return K, D, DIM
 
-def undistort(img, K, D, DIM):
+def undistort_fisheye(img, K, D, DIM):
     h,w = img.shape[:2]
-    map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, DIM, cv2.CV_16SC2)
+    cam = np.eye(3)
+    map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, cam, K, DIM, cv2.CV_16SC2)
     undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_DEFAULT)
     return undistorted_img
-
-
+def undistort(img, K, D, DIM):
+    return cv2.undistort(img, K, D, None, K)
 # calibrate camera, output parameter, and undistort val.jpg
 
 if __name__ == "__main__":

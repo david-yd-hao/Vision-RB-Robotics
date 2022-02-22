@@ -19,7 +19,12 @@ def get_poly(pic):
 
     return polygons_list
 
-
+def draw_blank(blank, coordinate_list):
+    for i in coordinate_list:
+        x = i[0]
+        y = i[1]
+        blank = cv2.circle(blank, (x,y), radius=0, color=(255, 255, 255), thickness=-1) 
+    return blank
 # Showing the final image. 
 #cv2.imshow('image2', img)
 #cv2.waitKey(0)

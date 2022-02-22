@@ -14,7 +14,7 @@ font = cv2.FONT_HERSHEY_COMPLEX
 
 def draw_corners(img):
     polygons_list = pl.get_poly(img)
-
+    plist = []
     for polygon in polygons_list:
         polygons = polygon.ravel()
         i=0
@@ -22,7 +22,7 @@ def draw_corners(img):
                 if(i % 2 == 0): 
                     x = polygons[i] 
                     y = polygons[i + 1] 
-
+                    plist.append([x, y])
                     # String containing the co-ordinates. 
                     string = str(x) + " " + str(y) 
 
@@ -34,7 +34,7 @@ def draw_corners(img):
                         # dot on remaining co-ordinates. 
                         img = cv2.circle(img, (x,y), radius=0, color=(0, 0, 255), thickness=-1) 
                 i = i + 1
-    return img
+    return plist, img
 
 
 
