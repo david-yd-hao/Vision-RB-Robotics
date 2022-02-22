@@ -37,7 +37,7 @@ def draw_corners(img):
     return plist, img
 def draw_points(img, points, radius, color):
     for i in points:
-        img = cv2.circle(img, (i[0],i[1]), radius=radius, color=color, thickness=1) 
+        img = cv2.circle(img, (i[0],i[1]), radius=radius, color=color, thickness=radius) 
     return img
 
 if __name__ == "__main__":

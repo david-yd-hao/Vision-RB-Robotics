@@ -77,6 +77,9 @@ if __name__ == "__main__":
 
         # get and draws corner dots
         plist, current_frame = corners.draw_corners(current_frame)
+        polygons = pl.get_poly(current_frame)
+        average = pl.get_average(polygons)
+        current_frame = corners.draw_points(current_frame, average, 3, (0, 255, 0))
         current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         cv2.imshow("frame", current_frame)
         cv2.imshow('dots', pl.draw_blank(blank_image, plist))

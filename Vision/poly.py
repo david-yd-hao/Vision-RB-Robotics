@@ -4,7 +4,18 @@ import contours
 
 # Read the original image
 #img = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Pics/tablecube_UDT1.png')
-
+def get_average(polygons):
+    average_points = []
+    for i in polygons:
+        sum_x = 0
+        sum_y = 0
+        count = 0
+        for j in i:
+            sum_x += j[0][0]
+            sum_y += j[0][1]
+            count += 1
+        average_points.append([int(sum_x/count), int(sum_y/count)])
+    return average_points
 def get_poly(pic):
     img = pic
 
