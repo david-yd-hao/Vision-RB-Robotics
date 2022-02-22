@@ -2,11 +2,8 @@ from calendar import c
 import cv2
 import threading
 import calibrate
-import contours
 import numpy as np
-import poly as pl
-import imutils
-import corners
+
 
 # select camera and video out
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
@@ -57,24 +54,20 @@ def get_grey(copy_=True):
 
 if __name__ == "__main__":
     while(True):
-        if cv2.waitKey(1) == 27:
-            break
+        
+
+        current_DT_frame = get_frame()
+        current_UDT_frame = calibrate.undistort(get_frame(), K2, D2, DIM2)
+
+
         if cv2.waitKey(1) == 32:
             imagenumber += 1
             name = str(imagenumber)
-            cv2.imwrite('imaged%s.png'%name, calibrate.undistort(_frame, K2, D2, DIM2))
-
-        current_frame = calibrate.undistort(get_frame(), K2, D2, DIM2)
-        current_frame = current_frame[600:759, 0:300]
+            cv2.imwrite('DT_imaged%s.png'%name, current_DT_frame)
+            cv2.imwrite('UDT_imaged%s.png'%name, current_UDT_frame)
 
 
-        # gets and draws boundary of contours. 
-        current_contour = contours.get_contour(current_frame)
-        cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
-
-        # get and draws corner dots
-        current_frame = corners.draw_corners(current_frame)
-        cv2.imshow("frame", current_frame)
+        cv2.imshow("frame", current_DT_frame)
         #out.write(get_frame())
     _capture.release()
     # out.release()
