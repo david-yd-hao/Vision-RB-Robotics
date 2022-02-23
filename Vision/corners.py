@@ -6,11 +6,6 @@ import poly as pl
 
 font = cv2.FONT_HERSHEY_COMPLEX 
 
-# Read the original image
-# img = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Pics/tablecube_UDT1.png')
-#img = img[600:750, 50:250]
-# img[:, :, 0:2] = 0
-
 
 def draw_corners(img):
     polygons_list = pl.get_poly(img)
@@ -35,18 +30,9 @@ def draw_corners(img):
                         img = cv2.circle(img, (x,y), radius=0, color=(0, 0, 255), thickness=-1) 
                 i = i + 1
     return plist, img
+
+
 def draw_points(img, points, radius, color):
     for i in points:
         img = cv2.circle(img, (i[0],i[1]), radius=radius, color=color, thickness=radius) 
     return img
-
-if __name__ == "__main__":
-    # Showing the final image. 
-    cv2.imshow('image2', img)
-
-
-    # cv2.imshow('pic',contour)
-    cv2.waitKey(0)
-
-
-    # print(contour)

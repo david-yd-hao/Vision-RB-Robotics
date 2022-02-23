@@ -5,6 +5,8 @@ import numpy as np
 import poly as pl
 import pandas as pd
 import mask
+
+
 def get_average(polygons):
     average_points = []
     for i in polygons:
@@ -17,15 +19,21 @@ def get_average(polygons):
             count += 1
         average_points.append([int(sum_x/count), int(sum_y/count)])
     return average_points
+
+
 K2 = np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]])
 D2 = np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]])
 DIM2 = (1016, 760)
-img = cv2.imread("C:\\Users\\Shuohan\\Desktop\\ML\\IDP\\TestPics\\DT_imaged8.png")
+
+
+img = cv2.imread("/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/TestPics/DT_imaged8.png")
 img = calibrate.undistort_fisheye(img, K2, D2, DIM2)
 red = mask.red_mask(img=img)
 blue = mask.blue_mask(img=img)
 white = mask.white_mask(img=img)
-cv2.imshow('blue', white)
+
+
+cv2.imshow('white', white)
 polygons = pl.get_poly(white)
 average = get_average(polygons)
 plist, current_frame = corners.draw_corners(white)
