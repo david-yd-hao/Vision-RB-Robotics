@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 def get_contour(pic):
     im = pic
     # Convert to graycsale
@@ -11,6 +12,7 @@ def get_contour(pic):
     return contours
 
 
+
 def get_sobel_edge(pic):
     img = pic
     img_blur = cv2.GaussianBlur(img, (3,3), sigmaX=0.1, sigmaY=0.1)
@@ -19,18 +21,23 @@ def get_sobel_edge(pic):
     abs_grad_x = cv2.convertScaleAbs(grad_x)
     abs_grad_y = cv2.convertScaleAbs(grad_y)
     return abs_grad_x + abs_grad_y
+
+
+
 def get_canny_edge(pic):
     img = pic
     
-    # Blur the image for better edge detection
+    ######### Blur the image for better edge detection
     img_blur = cv2.GaussianBlur(img, (3,3), 0)
 
+
+    ######## Sharpen the image
     # kernel = np.array([[0, -1, 0],
     #                [-1, 5,-1],
     #                [0, -1, 0]])
     # image_sharp = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
 
-    # Canny Edge Detection
+    ######### Canny Edge Detection
     edges = cv2.Canny(image=img_blur, threshold1=60, threshold2=200)
 
     return edges

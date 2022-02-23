@@ -2,9 +2,6 @@ import cv2
 import numpy as np
 import contours
 
-# Read the original image
-#img = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Pics/tablecube_UDT1.png')
-
 
 def get_average(polygons):
     average_points = []
@@ -35,7 +32,7 @@ def get_poly(pic):
     return polygons_list
 
 
-# draw coordinate list on blank picture
+############ draw coordinate list on blank picture
 def draw_blank(blank, coordinate_list):
     for i in coordinate_list:
         x = i[0]

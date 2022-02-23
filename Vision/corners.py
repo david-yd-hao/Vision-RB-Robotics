@@ -18,15 +18,13 @@ def draw_corners(img):
                     x = polygons[i] 
                     y = polygons[i + 1] 
                     plist.append([x, y])
-                    # String containing the co-ordinates. 
-                    string = str(x) + " " + str(y) 
 
-                    # put dots on corners
+                    ####### put dots on corners
                     if(i == 0): 
-                        # dot on topmost co-ordinate. 
+                        ####### dot on topmost co-ordinate. 
                         img = cv2.circle(img, (x,y), radius=0, color=(255, 0, 0), thickness=-1) 
                     else: 
-                        # dot on remaining co-ordinates. 
+                        ####### dot on remaining co-ordinates. 
                         img = cv2.circle(img, (x,y), radius=0, color=(0, 0, 255), thickness=-1) 
                 i = i + 1
     return plist, img
