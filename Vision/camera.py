@@ -6,7 +6,7 @@ import contours
 import numpy as np
 import poly as pl
 import corners
-import matplotlib.pyplot as plt
+import mask
 
 
 ########## select camera
@@ -71,10 +71,13 @@ if __name__ == "__main__":
             cv2.imwrite('imaged%s.png'%name, calibrate.undistort(_frame, K2, D2, DIM2))
 
         ########## image set up
-        # current_frame = calibrate.undistort_fisheye(get_frame(), K2, D2, DIM2)
-        current_frame = get_frame()
+        current_frame = calibrate.undistort_fisheye(get_frame(), K2, D2, DIM2)
+        # current_frame = get_frame()
         # current_frame = current_frame[600:759, 0:300]
         blank_image = np.zeros(shape=current_frame.shape, dtype=np.uint8)
+
+        ########### red filter
+        current_frame = mask.red_mask(current_frame)
 
         ######### gets and draws boundary of contours. 
         current_contour = contours.get_contour(current_frame)
@@ -92,7 +95,7 @@ if __name__ == "__main__":
 
         ############# image output
         cv2.imshow("frame", current_frame)
-        cv2.imshow('dots', pl.draw_blank(blank_image, plist))
+        cv2.imshow('dots', pl.draw_blank(blank_image, plist,(255,0,0)))
 
         #out.write(get_frame())
     _capture.release()
