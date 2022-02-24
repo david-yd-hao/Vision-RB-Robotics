@@ -28,7 +28,7 @@ def get_canny_edge(pic):
     img = pic
     
     ######### Blur the image for better edge detection
-    img_blur = cv2.GaussianBlur(img, (3,3), 0)
+    img = cv2.GaussianBlur(img, (3,3), 0)
 
 
     ######## Sharpen the image
@@ -38,6 +38,6 @@ def get_canny_edge(pic):
     # image_sharp = cv2.filter2D(src=img, ddepth=-1, kernel=kernel)
 
     ######### Canny Edge Detection
-    edges = cv2.Canny(image=img_blur, threshold1=60, threshold2=200)
+    edges = cv2.Canny(image=img, threshold1=60, threshold2=200)
 
     return edges

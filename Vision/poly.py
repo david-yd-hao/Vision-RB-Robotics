@@ -26,17 +26,17 @@ def get_poly(pic):
     polygons_list = []
     for cnt in contour : 
 
-        approx = cv2.approxPolyDP(cnt, 0.001 * cv2.arcLength(cnt, True), True) 
+        approx = cv2.approxPolyDP(cnt, 0.001 * cv2.arcLength(cnt, True), True)
         polygons_list.append(approx)
 
     return polygons_list
 
 
 ############ draw coordinate list on blank picture
-def draw_blank(blank, coordinate_list):
+def draw_blank(blank, coordinate_list, color):
     for i in coordinate_list:
         x = i[0]
         y = i[1]
-        blank = cv2.circle(blank, (x,y), radius=0, color=(255, 255, 255), thickness=-1) 
+        blank = cv2.circle(blank, (x,y), radius=0, color=color, thickness=-1) 
     return blank
 
