@@ -55,7 +55,7 @@ def calibrate():
     D=np.array(D)
     return K, D, DIM
 
-def undistort_fisheye(img, K, D, DIM):
+def undistort_fisheye(img, K=np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]]), D=np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]]), DIM=(1016, 760)):
     h,w = img.shape[:2]
     cam = np.eye(3)
     map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, cam, K, DIM, cv2.CV_16SC2)

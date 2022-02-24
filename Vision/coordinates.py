@@ -1,5 +1,6 @@
 import collections
-def get_const_points(points_over_time):
+def get_const_points(points_over_time, number):
+    exist = False
     first = points_over_time[0]
     distances = [0] * len(first)
     for i in range(1, len(points_over_time)):
@@ -17,9 +18,10 @@ def get_const_points(points_over_time):
     for k, v in pdict.items():
         results.append(k)
         i += 1
-        if i == 4:
+        if i == number:
+            exist = True
             break
-    return results
+    return results, exist
 def get_dist(first, second):
     return ((second[1] - first[1])**2 + (second[0] - first[0])**2)**0.5
 def get_closest(point, point_list):
@@ -30,3 +32,5 @@ def get_closest(point, point_list):
             shortest = get_dist(point, i)
             shortestp = i
     return shortest, shortestp
+def get_red_dest(frame):
+    return

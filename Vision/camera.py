@@ -62,6 +62,7 @@ def get_grey(copy_=True):
 if __name__ == "__main__":
     avg_points_over_time = []
     i = 0
+    red_destinations = []
     while(True):
         if cv2.waitKey(1) == 27:
             break
@@ -72,8 +73,8 @@ if __name__ == "__main__":
 
         ########## image set up
         # current_frame = calibrate.undistort_fisheye(get_frame(), K2, D2, DIM2)
-        current_frame_original = get_frame()
-        current_frame = mask.red_mask(current_frame_original)
+        current_frame = calibrate.undistort_fisheye(get_frame())
+        current_frame_cropped_red = mask.red_mask(current_frame[100:450,600:950])
         # current_frame = current_frame[600:759, 0:300]
         blank_image = np.zeros(shape=current_frame.shape, dtype=np.uint8)
 
@@ -83,26 +84,36 @@ if __name__ == "__main__":
 
         ########### get and draws corner dots and center dots
         plist, current_frame = corners.draw_corners(current_frame)
-        polygons = pl.get_poly(current_frame)
+        polygons = pl.get_poly(current_frame_cropped_red)
         average = pl.get_average(polygons)
-        print(len(average))
         avg_points_over_time.append(average)
+        #### get red destinations' coordinates
         i += 1
-        if i == 21:
-            const_pts = coordinates.get_const_points(avg_points_over_time)
-            print(const_pts)
-            cv2.imshow('points', corners.draw_points(blank_image, const_pts, 2, (0, 255, 0)))
-            cv2.waitKey(0)
+        if i == 31:
+            const_pts, exist = coordinates.get_const_points(avg_points_over_time, 3)
+            if exist:
+                dist1 = coordinates.get_dist(const_pts[0], const_pts[1])
+                dist2 = coordinates.get_dist(const_pts[1], const_pts[2])
+                dist3 = coordinates.get_dist(const_pts[2], const_pts[0])
+                a = sorted([dist1, dist2, dist3])
+                if a[0] == dist1:
+                    const_pts = [const_pts[0], const_pts[2]]
+                if a[0] == dist2:
+                    const_pts = [const_pts[1], const_pts[0]]
+                if a[0] == dist3:
+                    const_pts = [const_pts[1], const_pts[2]]
+            red_destinations = const_pts
+            red_destinations[0] = tuple(map(sum, zip(red_destinations[0], (100, 600))))
+            red_destinations[1] = tuple(map(sum, zip(red_destinations[1], (100, 600))))
+        
         current_frame = corners.draw_points(current_frame, average, 2, (0, 255, 0))
         # blank_image = corners.draw_points(blank_image, average, 2, (0, 255, 0))
-        
         ########## image resize
+        print(red_destinations)
         current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
-
         ############# image output
-        cv2.imshow('original', current_frame_original)
         cv2.imshow("red", current_frame)
-        cv2.imshow('centres', pl.draw_blank(blank_image, plist))
+        cv2.imshow('centres', pl.draw_blank(blank_image, plist,(0, 255, 0)))
 
         #out.write(get_frame())
     _capture.release()
