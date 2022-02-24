@@ -13,7 +13,7 @@ def get_average(polygons):
             sum_x += j[0][0]
             sum_y += j[0][1]
             count += 1
-        average_points.append([int(sum_x/count), int(sum_y/count)])
+        average_points.append((int(sum_x/count), int(sum_y/count)))
     return average_points
 
 

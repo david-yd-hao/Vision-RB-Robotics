@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import contours
-import imutils
 import poly as pl
 
 font = cv2.FONT_HERSHEY_COMPLEX 

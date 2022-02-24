@@ -1,7 +1,7 @@
 import cv2
 
 
-def red_mask(img, lower=[(0,80,126), (5,255,255)], higher=[(165,80,126), (180,255,255)]):
+def red_mask(img, lower=[(0,80,100), (5,255,255)], higher=[(165,80,100), (180,255,255)]):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask1 = cv2.inRange(img_hsv, lower[0], lower[1])
     mask2 = cv2.inRange(img_hsv, higher[0], higher[1])
