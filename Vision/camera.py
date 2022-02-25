@@ -59,6 +59,7 @@ def get_grey(copy_=True):
 if __name__ == "__main__":
     avg_points_over_time = []
     i = 0
+    calibrate_frame_num = 31
     red_destinations = []
     while(True):
         if cv2.waitKey(1) == 27:
@@ -73,15 +74,18 @@ if __name__ == "__main__":
         current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
         current_frame_right_red = mask.red_mask(current_frame[100:450,600:950])
         cv2.imshow('left',current_frame_left_red)
-        blank_image = np.zeros(shape=current_frame_left_red.shape, dtype=np.uint8)
 
+        blank_image = np.zeros(shape=current_frame_left_red.shape, dtype=np.uint8)
+        blank_copy = np.zeros(shape=current_frame.shape, dtype=np.uint8)
         ######### gets and draws boundary of contours on original
         current_contour = contours.get_contour(current_frame)
         current_left_contours = contours.get_contour(current_frame_left_red)
-
+        current_right_contours = contours.get_contour(current_frame_right_red)
         ######### gets and draws cubes on blank
-        cube = cubes.getcube(blank_image, current_left_contours)
+        cube = cubes.getcube(blank_image, current_left_contours, 0, 500)
+        dest = cubes.getcube(blank_copy, current_right_contours, 600, 100)
         print(cube)
+        print(dest)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
 
         ########### get and draws corner dots and center dots
@@ -90,10 +94,9 @@ if __name__ == "__main__":
         average = pl.get_average(polygons)
         avg_points_over_time.append(average)
 
-
         #### get red destinations' coordinates
         i += 1
-        if i == 31:
+        if i == calibrate_frame_num:
             const_pts, exist = coordinates.get_const_points(avg_points_over_time, 3)
             if exist:
                 dist1 = coordinates.get_dist(const_pts[0], const_pts[1])
@@ -107,9 +110,10 @@ if __name__ == "__main__":
                 if a[0] == dist3:
                     const_pts = [const_pts[1], const_pts[2]]
             red_destinations = const_pts
-            red_destinations[0] = tuple(map(sum, zip(red_destinations[0], (100, 600))))
-            red_destinations[1] = tuple(map(sum, zip(red_destinations[1], (100, 600))))
-        
+            red_destinations[0] = tuple(map(sum, zip(red_destinations[0], (600, 100))))
+            red_destinations[1] = tuple(map(sum, zip(red_destinations[1], (600, 100))))
+        if i > calibrate_frame_num:
+            pl.draw_blank(current_frame, red_destinations, (0, 0, 255))
         # print(red_destinations)
 
         # current_frame = corners.draw_points(current_frame, average, 2, (0, 255, 0))
