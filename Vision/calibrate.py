@@ -61,6 +61,8 @@ def undistort_fisheye(img, K=np.array([[637.8931714029114, 0.0, 509.671251433853
     map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, cam, K, DIM, cv2.CV_16SC2)
     undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_DEFAULT)
     return undistorted_img
+
+
 def undistort(img, K, D, DIM):
     return cv2.undistort(img, K, D, None, K)
 # calibrate camera, output parameter, and undistort val.jpg

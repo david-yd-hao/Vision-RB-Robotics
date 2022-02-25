@@ -1,4 +1,6 @@
 import collections
+
+
 def get_const_points(points_over_time, number):
     exist = False
     first = points_over_time[0]
@@ -22,8 +24,12 @@ def get_const_points(points_over_time, number):
             exist = True
             break
     return results, exist
+
+
 def get_dist(first, second):
     return ((second[1] - first[1])**2 + (second[0] - first[0])**2)**0.5
+
+
 def get_closest(point, point_list):
     shortest = get_dist(point, point_list[0])
     shortestp = point_list[0]
@@ -32,5 +38,7 @@ def get_closest(point, point_list):
             shortest = get_dist(point, i)
             shortestp = i
     return shortest, shortestp
+
+
 def get_red_dest(frame):
     return

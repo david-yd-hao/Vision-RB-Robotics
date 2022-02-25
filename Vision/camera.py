@@ -1,13 +1,15 @@
 from calendar import c
 import cv2
 import threading
+import numpy as np
 import calibrate
 import contours
-import numpy as np
 import poly as pl
-import corners
 import mask
 import coordinates
+import cubes
+
+
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
@@ -17,11 +19,6 @@ _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 # _npzfile = np.load('cache.npz')
 #K2 = _npzfile['mtx']
 #D2 = _npzfile['dist']
-
-########### undistortion parameters
-K2 = np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]])
-D2 = np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]])
-DIM2 = (1016, 760)
 
 ######### set number for image capturer
 imagenumber = 0
@@ -69,24 +66,31 @@ if __name__ == "__main__":
         if cv2.waitKey(1) == 32:
             imagenumber += 1
             name = str(imagenumber)
-            cv2.imwrite('imaged%s.png'%name, calibrate.undistort(_frame, K2, D2, DIM2))
+            cv2.imwrite('imaged%s.png'%name, calibrate.undistort_fisheye(_frame))
 
         ########## image set up
-        # current_frame = calibrate.undistort_fisheye(get_frame(), K2, D2, DIM2)
         current_frame = calibrate.undistort_fisheye(get_frame())
-        current_frame_cropped_red = mask.red_mask(current_frame[100:450,600:950])
-        # current_frame = current_frame[600:759, 0:300]
-        blank_image = np.zeros(shape=current_frame.shape, dtype=np.uint8)
+        current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
+        current_frame_right_red = mask.red_mask(current_frame[100:450,600:950])
+        cv2.imshow('left',current_frame_left_red)
+        blank_image = np.zeros(shape=current_frame_left_red.shape, dtype=np.uint8)
 
-        ######### gets and draws boundary of contours. 
+        ######### gets and draws boundary of contours on original
         current_contour = contours.get_contour(current_frame)
+        current_left_contours = contours.get_contour(current_frame_left_red)
+
+        ######### gets and draws cubes on blank
+        cube = cubes.getcube(blank_image, current_left_contours)
+        print(cube)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
 
         ########### get and draws corner dots and center dots
-        plist, current_frame = corners.draw_corners(current_frame)
-        polygons = pl.get_poly(current_frame_cropped_red)
+        # plist, current_frame = corners.draw_corners(current_frame)
+        polygons = pl.get_poly(current_frame_right_red)
         average = pl.get_average(polygons)
         avg_points_over_time.append(average)
+
+
         #### get red destinations' coordinates
         i += 1
         if i == 31:
@@ -106,14 +110,19 @@ if __name__ == "__main__":
             red_destinations[0] = tuple(map(sum, zip(red_destinations[0], (100, 600))))
             red_destinations[1] = tuple(map(sum, zip(red_destinations[1], (100, 600))))
         
-        current_frame = corners.draw_points(current_frame, average, 2, (0, 255, 0))
+        # print(red_destinations)
+
+        # current_frame = corners.draw_points(current_frame, average, 2, (0, 255, 0))
         # blank_image = corners.draw_points(blank_image, average, 2, (0, 255, 0))
+        
+        
+        
         ########## image resize
-        print(red_destinations)
         current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
+        
+        
         ############# image output
         cv2.imshow("red", current_frame)
-        cv2.imshow('centres', pl.draw_blank(blank_image, plist,(0, 255, 0)))
 
         #out.write(get_frame())
     _capture.release()

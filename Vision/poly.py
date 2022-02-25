@@ -37,6 +37,6 @@ def draw_blank(blank, coordinate_list, color):
     for i in coordinate_list:
         x = i[0]
         y = i[1]
-        blank = cv2.circle(blank, (x,y), radius=0, color=color, thickness=-1) 
+        blank = cv2.circle(blank, (x,y), radius=0, color=color, thickness=3) 
     return blank
 
