@@ -75,15 +75,14 @@ if __name__ == "__main__":
         current_frame_right_red = mask.red_mask(current_frame[100:450,600:950])
         cv2.imshow('left',current_frame_left_red)
 
-        blank_image = np.zeros(shape=current_frame_left_red.shape, dtype=np.uint8)
-        blank_copy = np.zeros(shape=current_frame.shape, dtype=np.uint8)
+        blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
         ######### gets and draws boundary of contours on original
         current_contour = contours.get_contour(current_frame)
         current_left_contours = contours.get_contour(current_frame_left_red)
         current_right_contours = contours.get_contour(current_frame_right_red)
         ######### gets and draws cubes on blank
-        cube = cubes.getcube(blank_image, current_left_contours, 0, 500)
-        dest = cubes.getcube(blank_copy, current_right_contours, 600, 100)
+        cube, blank_img_cube = cubes.getcube(blank_img, current_left_contours, 0, 500)
+        dest, blank_img_dest = cubes.getcube(blank_img, current_right_contours, 600, 100)
         print(cube)
         print(dest)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
@@ -127,6 +126,8 @@ if __name__ == "__main__":
         
         ############# image output
         cv2.imshow("red", current_frame)
+        cv2.imshow('cube', blank_img_cube)
+        cv2.imshow('dest', blank_img_dest)
 
         #out.write(get_frame())
     _capture.release()

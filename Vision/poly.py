@@ -33,10 +33,10 @@ def get_poly(pic):
 
 
 ############ draw coordinate list on blank picture
-def draw_blank(blank, coordinate_list, color):
+def draw_blank(blank, coordinate_list, color = (0, 255, 0)):
     for i in coordinate_list:
         x = i[0]
         y = i[1]
-        blank = cv2.circle(blank, (x,y), radius=0, color=color, thickness=3) 
+        blank = cv2.circle(blank, (y,x), radius=0, color=color, thickness=3) 
     return blank
 
