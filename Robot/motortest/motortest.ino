@@ -1,70 +1,59 @@
-const int IN_A1 = 2;
-const int PWM_A = 3;
-const int IN_A2 = 4;
-const int PWM_B = 5;
-const int IN_B1 = 7;
-const int IN_B2 = 8;
+/*
+This is a test sketch for the Adafruit assembled Motor Shield for Arduino v2
+It won't work with v1.x motor shields! Only for the v2's with built in PWM
+control
+
+For use with the Adafruit Motor Shield v2
+---->  http://www.adafruit.com/products/1438
+*/
+
+#include <Adafruit_MotorShield.h>
+
+// Create the motor shield object with the default I2C address
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+// Or, create it with a different I2C address (say for stacking)
+// Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61);
+
+// Select which 'port' M1, M2, M3 or M4. In this case, M1
+Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(3);
+// You can also make another motor on port M2
 
 void setup() {
-  pinMode(IN_A1, OUTPUT);
-  pinMode(IN_A2, OUTPUT);
-  pinMode(IN_B1, OUTPUT);
-  pinMode(IN_B2, OUTPUT);
+  Serial.begin(9600);           // set up Serial library at 9600 bps
+  Serial.println("Adafruit Motorshield v2 - DC Motor test!");
+
+  if (!AFMS.begin()) {         // create with the default frequency 1.6KHz
+  // if (!AFMS.begin(1000)) {  // OR with a different frequency, say 1KHz
+    Serial.println("Could not find Motor Shield. Check wiring.");
+    while (1);
+  }
+  Serial.println("Motor Shield found.");
+
+  // Set the speed to start, from 0 (off) to 255 (max speed)
+  myMotor->setSpeed(150);
+  myMotor->run(FORWARD);
+  // turn on motor
+  myMotor->run(RELEASE);
+  myOtherMotor->setSpeed(150);
+  myOtherMotor->run(FORWARD);
+  // turn on motor
+  myOtherMotor->run(RELEASE);
 }
-void moveLeft(void)
-{
-  digitalWrite(IN_A1, LOW);
-  digitalWrite(IN_B1, HIGH);
-  digitalWrite(IN_A2, LOW);
-  digitalWrite(IN_B2, LOW);
-  analogWrite(PWM_A, 255);
-  analogWrite(PWM_B, 255);
-}
-void moveRight(void)
-{
-  digitalWrite(IN_A1, HIGH);
-  digitalWrite(IN_B1, LOW);
-  digitalWrite(IN_A2, LOW);
-  digitalWrite(IN_B2, LOW);
-  analogWrite(PWM_A, 255);
-  analogWrite(PWM_B, 255);
-}
-void moveForward(void)
-{
-  digitalWrite(IN_A1, HIGH);
-  digitalWrite(IN_B1, HIGH);
-  digitalWrite(IN_A2, LOW);
-  digitalWrite(IN_B2, LOW);
-  analogWrite(PWM_A, 255);
-  analogWrite(PWM_B, 255);
-}
-void moveBackward(void)
-{
-  digitalWrite(IN_A1, LOW);
-  digitalWrite(IN_B1, LOW);
-  digitalWrite(IN_A2, HIGH);
-  digitalWrite(IN_B2, HIGH);
-  analogWrite(PWM_A, 255);
-  analogWrite(PWM_B, 255);
-}
-void stopCar(void)
-{
-  digitalWrite(IN_A1, LOW);
-  digitalWrite(IN_B1, LOW);
-  digitalWrite(IN_A2, LOW);
-  digitalWrite(IN_B2, LOW);
-  analogWrite(PWM_A, 255);
-  analogWrite(PWM_B, 255);
-}
+
 void loop() {
-  moveForward();
-  delay(3000);
-  moveLeft();
-  delay(3000);
-  moveRight();
-  delay(3000);
-  moveBackward();
-  delay(3000);
-  stopCar();
+  uint8_t i;
+
+  Serial.print("tick");
+
+  myMotor->run(FORWARD);
+  myOtherMotor->run(FORWARD);
+  myMotor->setSpeed(200);
+  myOtherMotor->setSpeed(255);
+  delay(10000);
+  myMotor->setSpeed(0);
+  myOtherMotor->setSpeed(0);
+  myMotor->run(RELEASE);
+  myOtherMotor->run(RELEASE);
   delay(3000);
 }

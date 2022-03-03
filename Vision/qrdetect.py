@@ -30,6 +30,7 @@ def conter(image):
     M = {}
     # lista = [0,1,2,float("nan"),4]
     # print(lista[3])
+    CentralPoint = [0,0]
 
     """
     Calculate the centers of the contours

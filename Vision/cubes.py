@@ -62,7 +62,7 @@ def getcube(blank_img, contours, x_lim, y_lim):
         blank_img_copy = pl.draw_blank(blank_img_copy, [[centery + y_lim, centerx + x_lim]])
         return cube, blank_img_copy
     else:
-        return 
+        return None, blank_img_copy
 
 
 
