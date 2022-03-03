@@ -8,7 +8,7 @@ import poly as pl
 import mask
 import coordinates
 import cubes
-
+import testqr as tq
 
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
@@ -71,6 +71,8 @@ if __name__ == "__main__":
 
         ########## image set up
         current_frame = calibrate.undistort_fisheye(get_frame())
+        current_frame = tq.qrdet(current_frame)
+        cv2.imshow('qr', current_frame)
         current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
         current_frame_right_red = mask.red_mask(current_frame[100:450,600:950])
         cv2.imshow('left',current_frame_left_red)
