@@ -30,9 +30,11 @@ def getrectbox(blank_img, contours):
     return blank_img_copy, rects_list, box_list
 
 
+###### get the cubes in cube zone 
+###### added coordinate correction
 def getcube(blank_img, contours, x_lim, y_lim):
 
-    #### add division by zero
+    #### add division by zeros
 
     blank_img_copy = blank_img.copy()
     img_cache, rects_list, box_list = getrectbox(blank_img, contours)
@@ -63,7 +65,4 @@ def getcube(blank_img, contours, x_lim, y_lim):
         return cube, blank_img_copy
     else:
         return None, blank_img_copy
-
-
-
 
