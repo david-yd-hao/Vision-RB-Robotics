@@ -8,6 +8,7 @@ import mask
 import cubes
 import qrdetect as qr
 
+
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
@@ -24,7 +25,6 @@ _grey = None
 def _reader_func():
     global _frame, _grey
     while True:
-        import time
         _rval, _f = _capture.read()
         if _rval:
             _frame = _f
@@ -65,8 +65,9 @@ if __name__ == "__main__":
         current_contour = contours.get_contour(current_frame)
         current_left_contours = contours.get_contour(current_frame_left_red)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
+        ######### draws special points
         cv2.line(current_frame,(683,197),(315,533),(255,0,0),2)
-        current_frame = pl.draw_blank(blank = current_frame, coordinate_list=[(619,55),(536,127),(834,269),(749,349)], color = (0, 255, 0))
+        current_frame = pl.draw_blank(blank = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
         ######### gets and draws cubes on blank
         cube, blank_img_cube = cubes.getcube(blank_img, current_left_contours, 0, 500)
         print(cube)

@@ -2,7 +2,6 @@ from calendar import c
 import cv2
 import threading
 import calibrate
-import numpy as np
 
 
 ############ select camera and video out
