@@ -59,9 +59,7 @@ if __name__ == "__main__":
         #current_frame_denoise = cv2.fastNlMeansDenoisingColored(current_frame, None, 3, 10, 7, 21)
         #cv2.imshow("denoised", current_frame_denoise)
         current_frame_blank = current_frame.copy()
-        current_frame_b = current_frame.copy()
-        current_frame_glare = current_frame.copy()
-        current_frame_green = mask.green_mask(current_frame.copy(), lower = [(50, 10, 100)], higher = [(90, 255, 245)])
+        current_frame_green = mask.green_mask(current_frame.copy(), lower = [(50, 5, 80)], higher = [(90, 255, 245)])
         current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
         cv2.imshow('left',current_frame_left_red)
         blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
@@ -78,21 +76,19 @@ if __name__ == "__main__":
 
         
         ########## gets and draws qr code position and angle
-        #position, realposition,RotationAngle = qr.conter(current_frame_blank)
-        #print(position, realposition, RotationAngle)
-        #qr_frame = pl.draw_blank(blank = current_frame_blank, coordinate_list=[position], color = (0, 255, 0))
+        position, realposition,RotationAngle = qr.conter(current_frame_green)
+        print(position, realposition, RotationAngle)
+        qr_frame = pl.draw_blank(blank = current_frame_blank, coordinate_list=[position], color = (0, 255, 0))
         
         
         ########## image resize
         # current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
-        cv2.imshow("green", current_frame_green)
-        #cv2.imshow("qrc", mask.sharpen(tq.qrdet(current_frame_b)))
-        #cv2.imshow("sharpen", mask.sharpen(current_frame_b))
         ############# image output
-        #cv2.imshow("frame", current_frame)
-        #cv2.imshow("qr", current_frame_blank)
-        #cv2.imshow('cube', blank_img_cube)
-        #cv2.imshow('qr',qr_frame)
+        cv2.imshow("frame", current_frame)
+        cv2.imshow('green',current_frame_green)
+        cv2.imshow("qr", current_frame_blank)
+        cv2.imshow('cube', blank_img_cube)
+        cv2.imshow('qr',qr_frame)
 
         if cv2.waitKey(1) == 27:
             break
