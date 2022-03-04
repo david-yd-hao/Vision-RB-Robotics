@@ -94,9 +94,9 @@ def conter(image):
         # print("top point:",centers[top])
         
         #斜边的的中点就是二维码的质心
-        CentralPoint_x = (centers[median1][0]+centers[median2][0])/2
-        CentralPoint_y = (centers[median1][1]+centers[median2][1])/2
-        CentralPoint = [CentralPoint_x,CentralPoint_y]
+        CentralPoint_x = int((centers[median1][0]+centers[median2][0])/2)
+        CentralPoint_y = int((centers[median1][1]+centers[median2][1])/2)
+        CentralPoint = [CentralPoint_y,CentralPoint_x]
         # print("Central point:",CentralPoint)
         #根据图片像素与实际map的比例，可以求出二维码质心在实际中的位置
         #图片像素1920*1080  实际距离是4.2*2.4m
@@ -145,6 +145,8 @@ def run():
         frame = calibrate.undistort_fisheye(frame)
         # frame=cv2.imread("/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/TestPics/qr.png")
         position, realposition,RotationAngle = conter(frame)
+        if position == [-1,-1]:
+            continue
         print(position, realposition, RotationAngle)
         frame = pl.draw_blank(blank = frame, coordinate_list=[position], color = (0, 255, 0))
         cv2.imshow('123456789',frame)

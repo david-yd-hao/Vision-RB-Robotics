@@ -57,6 +57,7 @@ if __name__ == "__main__":
         ########## image set up
         current_frame = calibrate.undistort_fisheye(get_frame())
         current_frame_blank = current_frame.copy()
+        current_frame_green = mask.green
         current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
         cv2.imshow('left',current_frame_left_red)
         blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
