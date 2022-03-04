@@ -3,10 +3,8 @@ import imutils
 
 def qrdet(img):
     decoder = cv2.QRCodeDetector()
-    data, points, _ = decoder.detectAndDecode(img)
-
-    if points is not None:
-        print('Decoded data: ' + data)
+    rv, points = decoder.detect(img)
+    if rv:
     
         points = points[0]
         for i in range(len(points)):
