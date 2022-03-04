@@ -63,7 +63,7 @@ def undistort_fisheye(img, K=np.array([[637.8931714029114, 0.0, 509.671251433853
     return undistorted_img
 
 
-def undistort(img, K, D, DIM):
+def undistort(img, K=np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]]), D=np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]]), DIM=(1016, 760)):
     return cv2.undistort(img, K, D, None, K)
 # calibrate camera, output parameter, and undistort val.jpg
 
