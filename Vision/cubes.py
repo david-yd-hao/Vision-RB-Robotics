@@ -61,7 +61,7 @@ def getcube(blank_img, contours, x_lim, y_lim):
         orientation = orientation / num
 
         cube = [[centery + y_lim, centerx + x_lim] , [width,height],orientation]
-        blank_img_copy = pl.draw_blank(blank_img_copy, [[centery + y_lim, centerx + x_lim]])
+        blank_img_copy = pl.draw_points_yx(blank_img_copy, [[centery + y_lim, centerx + x_lim]])
         return cube, blank_img_copy
     else:
         return None, blank_img_copy

@@ -64,7 +64,7 @@ if __name__ == "__main__":
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
         ######### draws special points
         cv2.line(current_frame,(683,197),(315,533),(255,0,0),2)
-        current_frame = pl.draw_blank(blank = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
+        current_frame = pl.draw_points_yx(blank = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
         ######### gets and draws cubes on blank
         cube, blank_img_cube = cubes.getcube(blank_img, current_left_contours, 0, 500)
 

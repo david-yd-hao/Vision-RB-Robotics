@@ -1,3 +1,4 @@
+from ast import Not
 import cv2
 import contours
 
@@ -31,16 +32,31 @@ def get_poly(pic):
     return polygons_list
 
 
-############ draw coordinate list on blank picture
+############ draw coordinate list on img picture
 ############ (y,x)
-def draw_blank(blank, coordinate_list, color = (0, 255, 0)):
-    if coordinate_list:
-        blank = blank.copy()
+def draw_points_yx(img, coordinate_list, color = (0, 255, 0)):
+    if coordinate_list is not None:
+        img = img.copy()
         for i in coordinate_list:
-            y = i[0]
-            x = i[1]
-            blank = cv2.circle(blank, (x,y), radius=0, color=color, thickness=3) 
-        return blank
+            y = int(i[0])
+            x = int(i[1])
+            img = cv2.circle(img, (x,y), radius=0, color=color, thickness=3) 
+        return img
     else:
-        return blank
+        return img
 
+
+############ (x,y)
+def draw_points_xy(img, coordinate_list, color = (0, 255, 0)):
+    if coordinate_list is not None:
+        img = img.copy()
+        for i in coordinate_list:
+            x = int(i[0])
+            y = int(i[1])
+            img = cv2.circle(img, (x,y), radius=0, color=color, thickness=3) 
+        return img
+    else:
+        return img
+
+
+def draw_line_grad(img, coordinate, grad = , color = (0, 255, 0))
