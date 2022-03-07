@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 import poly as pl
-
-
+import mask as mk
+import contours as ct
 ##### rects_list is a 2d list (rects are (center point, rotation), box_list is 3d list
 def getrectbox(blank_img, contours):
 
@@ -65,4 +65,10 @@ def getcube(blank_img, contours, x_lim, y_lim):
         return cube, blank_img_copy
     else:
         return None, blank_img_copy
-
+def isBlue(pic):
+    pic = mk.blue_mask(pic)
+    cont = ct.get_contour(pic)
+    if cont:
+        return True
+    else:
+        return False

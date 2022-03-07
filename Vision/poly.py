@@ -59,4 +59,4 @@ def draw_points_xy(img, coordinate_list, color = (0, 255, 0)):
         return img
 
 
-def draw_line_grad(img, coordinate, grad = , color = (0, 255, 0))
+#def draw_line_grad(img, coordinate, grad = , color = (0, 255, 0))
