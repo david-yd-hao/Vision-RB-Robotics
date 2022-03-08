@@ -1,6 +1,7 @@
 from ast import Not
 import cv2
 import contours
+import numpy as np
 
 
 def get_average(polygons):
@@ -59,4 +60,14 @@ def draw_points_xy(img, coordinate_list, color = (0, 255, 0)):
         return img
 
 
-def draw_line_grad(img, coordinate, grad = , color = (0, 255, 0))
+############ (x,y)
+def draw_line_rot(img, coordinate, rot, color = (0, 255, 0)):
+    img = img.copy()
+    starting_point = coordinate
+    rot = rot/180*np.pi
+    dx = int(50 * np.cos(rot))
+    dy = int(50 * np.sin(rot))
+    ending_point = [coordinate[0]+dx,coordinate[1]-dy]
+    print(ending_point)
+    img = cv2.line(img, starting_point, ending_point, color = color, thickness = 2)
+    return img

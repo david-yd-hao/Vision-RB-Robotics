@@ -6,12 +6,13 @@ import contours
 import poly as pl
 import mask
 import cubes
-import cv2.aruco as aruco
+import arucodetect as ad
 
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 imagenumber = 0
+font = cv2.FONT_HERSHEY_SIMPLEX
 
 
 if _capture.isOpened(): 
@@ -50,36 +51,38 @@ if __name__ == "__main__":
             name = str(imagenumber)
             cv2.imwrite('imaged%s.png'%name, calibrate.undistort_fisheye(_frame))
 
-        ########## image set up
+        ########## image set up and contour
         current_frame = calibrate.undistort_fisheye(get_frame())
-        current_frame_blank = current_frame.copy()
-        current_frame_green = mask.green_mask(current_frame.copy(), lower = [(50, 5, 80)], higher = [(90, 255, 245)])
-        current_frame_left_red = mask.red_mask(current_frame[500:759, 0:400])   ###### y axis from top, x axis from left
-        cv2.imshow('left',current_frame_left_red)
+        current_frame_copy = current_frame.copy()
         blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
-
-        ######### gets and draws contours on original & left bottom
         current_contour = contours.get_contour(current_frame)
-        current_left_contours = contours.get_contour(current_frame_left_red)
         cv2.drawContours(current_frame, current_contour, -1, (0, 255, 0), thickness=1)
+        
+        ########## cube detection red mask
+        # current_frame_left_red = mask.red_mask(current_frame[580:759, 50:250])   ###### y axis from top, x axis from left
+        current_left_red = mask.white_mask(current_frame[580:759, 50:250],lower=[(122,52,91)], higher=[(255, 248, 253)])
+        cv2.imshow('left',current_left_red)
+        current_left_contours = contours.get_contour(current_left_red)
+
         ######### draws special points
         cv2.line(current_frame,(683,197),(315,533),(255,0,0),2)
-        current_frame = pl.draw_points_yx(blank = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
-        ######### gets and draws cubes on blank
-        cube, blank_img_cube = cubes.getcube(blank_img, current_left_contours, 0, 500)
-
-        ######## gets aruco detection
-
+        current_frame = pl.draw_points_yx(img = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
         
-        ########## gets and draws qr code position and angle
+        ######### gets and draws cubes on current_frame
+        current_left,_,__ = cubes.getrectbox(current_frame_copy[580:759, 50:250],current_left_contours)
+        cube, frame = cubes.getcube(current_frame_copy, current_left_contours, 50, 580)
+        cube_center = [cube[0][1],cube[0][0]]
+        current_frame = pl.draw_line_rot(frame, cube_center, 90-cube[2])
 
-        
-        
+        ######## gets and draws robot aruco detection on current_frame
+        current_frame, corners, edge_center, centerline_rotation = ad.detectaruco(current_frame,font)
+        current_frame = pl.draw_line_rot(current_frame,edge_center,centerline_rotation)
+
         ########## image resize
         # current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
+        
         ############# image output
         cv2.imshow("frame", current_frame)
-        cv2.imshow('cube', blank_img_cube)
 
         if cv2.waitKey(1) == 27:
             break
