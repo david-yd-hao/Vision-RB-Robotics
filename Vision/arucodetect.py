@@ -14,6 +14,7 @@ def detectaruco(frame,font):
     parameters =  aruco.DetectorParameters_create()
 
     '''
+    
     detectMarkers(...)
         detectMarkers(image, dictionary[, corners[, ids[, parameters[, rejectedI
         mgPoints]]]]) -> corners, ids, rejectedImgPoints
