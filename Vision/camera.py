@@ -1,12 +1,12 @@
 import cv2
 import threading
 import numpy as np
-import calibrate
-import contours
-import poly as pl
-import mask
-import cubes
-import arucodetect as ad
+import Vision.calibrate as calibrate
+import Vision.contours as contours
+import Vision.poly as pl
+import Vision.mask as mask
+import Vision.cubes as cubes
+import Vision.arucodetect as ad
 
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
@@ -41,8 +41,12 @@ def get_frame(copy_=True):
     else: return _frame
 
 
-if __name__ == "__main__":
+def run():
     i = 0
+    cubeorientation = 0
+    cube_coo = ()
+    num_frame = 0
+    color_list = []
     while(True):
         if cv2.waitKey(1) == 27:
             break
@@ -53,6 +57,7 @@ if __name__ == "__main__":
 
         ########## image set up and contour
         current_frame = calibrate.undistort_fisheye(get_frame())
+        current_frame_isblue = current_frame.copy()[580:759, 50:250]
         current_frame_copy = current_frame.copy()
         blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
         current_contour = contours.get_contour(current_frame)
@@ -71,19 +76,23 @@ if __name__ == "__main__":
         ######### gets and draws cubes on current_frame
         current_left,_,__ = cubes.getrectbox(current_frame_copy[580:759, 50:250],current_left_contours)
         cube, frame = cubes.getcube(current_frame_copy, current_left_contours, 50, 580)
-        cube_center = [cube[0][1],cube[0][0]]
-        current_frame = pl.draw_line_rot(frame, cube_center, 90-cube[2])
+        # if cube:
+        #     cube_center = [int(cube[0][1]),int(cube[0][0])]
+        #     current_frame = pl.draw_line_rot(frame, cube_center, 90-cube[2])
 
-        ######## gets and draws robot aruco detection on current_frame
-        current_frame, corners, edge_center, centerline_rotation = ad.detectaruco(current_frame,font)
-        current_frame = pl.draw_line_rot(current_frame,edge_center,centerline_rotation)
+        # ######## gets and draws robot aruco detection on current_frame
+        #     current_frame, corners, edge_center, centerline_rotation = ad.detectaruco(current_frame,font)
+        #     if corners:
+        #         current_frame = pl.draw_line_rot(current_frame,edge_center,centerline_rotation)
 
         ########## image resize
         # current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         
         ############# image output
-        cv2.imshow("frame", current_frame)
-
+        iblue, pic = cubes.isBlue(current_frame_isblue)
+        cv2.imshow("frame", pic)
+        
+        print(iblue)
         if cv2.waitKey(1) == 27:
             break
         

@@ -1,11 +1,10 @@
 import cv2
 import numpy as np
-import poly as pl
-import mask
-import contours
-import calibrate
-import mask as mk
-import contours as ct
+import Vision.poly as pl
+import Vision.mask as mask
+import Vision.contours as contours
+import Vision.calibrate as calibrate
+import Vision.mask as mk
 
 
 ##### rects_list is a 2d list (rects are (center point, rotation), box_list is 3d list
@@ -85,11 +84,11 @@ def getcube(blank_img, contours, x_lim, y_lim):
 
 def isBlue(pic):
     pic = mk.blue_mask(pic)
-    cont = ct.get_contour(pic)
+    cont = contours.get_contour(pic)
     if cont:
-        return True
+        return True, pic
     else:
-        return False
+        return False, pic
 
 capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 x1 = 700
