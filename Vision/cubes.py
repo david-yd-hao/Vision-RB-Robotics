@@ -4,6 +4,9 @@ import poly as pl
 import mask
 import contours
 import calibrate
+import mask as mk
+import contours as ct
+
 
 ##### rects_list is a 2d list (rects are (center point, rotation), box_list is 3d list
 def getrectbox(blank_img, contours):
@@ -80,6 +83,14 @@ def getcube(blank_img, contours, x_lim, y_lim):
     else:
         return None, blank_img_copy
 
+def isBlue(pic):
+    pic = mk.blue_mask(pic)
+    cont = ct.get_contour(pic)
+    if cont:
+        return True
+    else:
+        return False
+
 capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 x1 = 700
 x2 = 1016
@@ -107,3 +118,4 @@ if __name__ == "__main__":
         cv2.imshow('red', current_left)
         if cv2.waitKey(1) == 27:
             break
+
