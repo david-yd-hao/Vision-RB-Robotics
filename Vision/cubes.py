@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
-import Vision.poly as pl
-import Vision.mask as mask
-import Vision.contours as contours
-import Vision.calibrate as calibrate
-import Vision.mask as mk
+import poly as pl
+import mask as mask
+import contours as contours
+import calibrate as calibrate
+import mask as mk
 
 
 ##### rects_list is a 2d list (rects are (center point, rotation), box_list is 3d list
@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
     while True:
         _rval, frame = capture.read()
-        # frame = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Vision/TestPics/cube/UDT_imaged11.png')
+        # frame = cv2.imread('/Users/davidhao/GitProject/CamProject/RB-Robotics/TestPics/cube/UDT_imaged11.png')
         frame = calibrate.undistort_fisheye(frame)
         current_left_red = mask.white_mask(frame[y1:y2, x1:x2],lower=[(154,48,104)], higher=[(208, 217, 255)])
         cv2.imshow('mask',current_left_red)

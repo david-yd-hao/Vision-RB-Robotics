@@ -1,5 +1,5 @@
 import cv2
-import Vision.contours as contours
+import contours
 import numpy as np
 
 

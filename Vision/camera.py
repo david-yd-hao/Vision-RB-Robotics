@@ -1,13 +1,15 @@
 import cv2
 import threading
 import numpy as np
-import Vision.calibrate as calibrate
-import Vision.contours as contours
-import Vision.poly as pl
-import Vision.mask as mask
-import Vision.cubes as cubes
-import Vision.arucodetect as ad
-
+import calibrate as calibrate
+import contours as contours
+import poly as pl
+import mask as mask
+import cubes as cubes
+import arucodetect as ad
+import communicate as com
+from turtle import delay
+from time import sleep
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
@@ -47,14 +49,14 @@ def run():
     cube_coo = ()
     num_frame = 0
     color_list = []
-    while(True):
+    while(i <= 30):
         if cv2.waitKey(1) == 27:
             break
         if cv2.waitKey(1) == 32:
             imagenumber += 1
             name = str(imagenumber)
             cv2.imwrite('imaged%s.png'%name, calibrate.undistort_fisheye(_frame))
-
+        i += 1
         ########## image set up and contour
         current_frame = calibrate.undistort_fisheye(get_frame())
         current_frame_isblue = current_frame.copy()[580:759, 50:250]
@@ -66,7 +68,7 @@ def run():
         ########## cube detection red mask
         # current_frame_left_red = mask.red_mask(current_frame[580:759, 50:250])   ###### y axis from top, x axis from left
         current_left_red = mask.white_mask(current_frame[580:759, 50:250],lower=[(122,52,91)], higher=[(255, 248, 253)])
-        cv2.imshow('left',current_left_red)
+        # cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
 
         ######### draws special points
@@ -90,10 +92,11 @@ def run():
         
         ############# image output
         iblue, pic = cubes.isBlue(current_frame_isblue)
-        cv2.imshow("frame", pic)
-        
+        # cv2.imshow("frame", pic)
+        # cv2.imshow("whole", current_frame)
         print(iblue)
+        com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, iblue)
         if cv2.waitKey(1) == 27:
             break
-        
+        #sleep(0.05)
     _capture.release()
