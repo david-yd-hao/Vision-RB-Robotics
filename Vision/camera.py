@@ -11,8 +11,38 @@ import communicate as com
 from turtle import delay
 from time import sleep
 ########## select camera
-capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
-capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
+_capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
+_capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
+imagenumber = 0
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+
+if _capture.isOpened(): 
+    _rval, _frame  = _capture.read()
+else:
+    _rval = False
+_grey = None
+
+
+def _reader_func():
+    global _frame, _grey
+    while True:
+        _rval, _f = _capture.read()
+        if _rval:
+            _frame = _f
+            _grey = cv2.cvtColor(_f, cv2.COLOR_BGR2GRAY)
+
+
+_reader = threading.Thread(target=_reader_func)
+_reader.daemon = True
+_reader.start()
+
+def get_frame(copy_=True):
+    global _frame
+    if copy_: return _frame.copy()
+    else: return 
+
+
 def run():
 
     i = 0
@@ -20,18 +50,37 @@ def run():
     cube_coo = ()
     num_frame = 0
     color_list = []
+    isBluelist = []
+    bluefinal = False
+    start = False
     while(True):
-        _, frame = capture.read()
         if cv2.waitKey(1) == 27:
             break
         if cv2.waitKey(1) == 32:
             imagenumber += 1
             name = str(imagenumber)
-            cv2.imwrite('imaged%s.png'%name, calibrate.undistort_fisheye(frame))
+            cv2.imwrite('imaged%s.png'%name, calibrate.undistort_fisheye(_frame))
         i += 1
         ########## image set up and contour
-        current_frame = calibrate.undistort_fisheye(frame)
-        current_frame_isblue = current_frame.copy()[580:759, 50:250]
+        current_frame = calibrate.undistort_fisheye(get_frame())
+        if i<= 30:
+            current_frame_isblue = current_frame.copy()[580:759, 60:250]
+            iblue, pic = cubes.isBlue(current_frame_isblue)
+            isBluelist.append(iblue)
+        if i == 31:
+            blue = 0
+            red = 0
+            for i in isBluelist:
+                if not i:
+                    red += 1
+                if i:
+                    blue += 1
+            if 2 * blue >= red:
+                bluefinal = True
+            else:
+                bluefinal = False
+        if i == 32:
+            start = True
         cv2.imshow("ori", current_frame_isblue)
         current_frame_copy = current_frame.copy()
         blank_img = np.zeros(shape=current_frame.shape, dtype=np.uint8)
@@ -41,7 +90,7 @@ def run():
         ########## cube detection red mask
         # current_frame_left_red = mask.red_mask(current_frame[580:759, 50:250])   ###### y axis from top, x axis from left
         current_left_red = mask.white_mask(current_frame[580:759, 50:250],lower=[(122,52,91)], higher=[(255, 248, 253)])
-        # cv2.imshow('left',current_left_red)
+        cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
 
         ######### draws special points
@@ -64,12 +113,16 @@ def run():
         # current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         
         ############# image output
-        iblue, pic = cubes.isBlue(current_frame_isblue)
+        
         cv2.imshow("frame", pic)
         # cv2.imshow("whole", current_frame)
-        print(iblue)
-        com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, iblue)
+        print(bluefinal)
+        start = int(start)
+        if bluefinal == True:
+            com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, 1, start)
+        elif bluefinal == False:
+            com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, 0, start)
         if cv2.waitKey(1) == 27:
             break
         #sleep(0.05)
-    capture.release()
+    _capture.release()

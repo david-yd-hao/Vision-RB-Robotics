@@ -86,7 +86,7 @@ def isBlue(pic):
     if cont:
         for i in cont:
             area = cv2.contourArea(i)
-            if area >= 20:
+            if area >= 0:
                 return True, pic
         return False, pic
     else:

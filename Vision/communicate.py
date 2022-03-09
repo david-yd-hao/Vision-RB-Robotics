@@ -21,8 +21,9 @@ if __name__ == "__main__":
     client = connect(host_name="127.0.0.1")
     send(client,"Hello","arduino/")
     receive(client, "arduino/")
-def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBlue):
+def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBlue, start):
     client = connect(host_name="127.0.0.1")
+    print('blue' , isBlue , 'start' , start)
     # font = cv2.FONT_HERSHEY_SIMPLEX
     # _, _, robo_centre, robo_ang = arucodetect.detectaruco(pic)
     # cube_ang = math.atan2(cube_co[1] - robo_centre[1], cube_co[1] - robo_centre[1])
@@ -34,8 +35,8 @@ def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBl
     # red2_error = ((red2[0] - robo_centre[0]) ** 2 + (red2[1] - robo_centre[1]) ** 2)**0.5
     # blue1_error = ((blue1[0] - robo_centre[0]) ** 2 + (blue1[1] - robo_centre[1]) ** 2)**0.5
     # blue2_error = ((blue2[0] - robo_centre[0]) ** 2 + (blue2[1] - robo_centre[1]) ** 2)**0.5
-    send(client,"cube_error","arduino/cube_error")
-    send(client,"cross_error","arduino/cross_error")
+    #send(client,"cube_error","arduino/cube_error")
+    #send(client,"cross_error","arduino/cross_error")
     # send(client,dest1_error,"arduino/dest1_error")
     # send(client,dest2_error,"arduino/dest2_error")
     # send(client,red1_error,"arduino/red1_error")
@@ -43,3 +44,4 @@ def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBl
     # send(client,blue1_error,"arduino/blue1_error")
     # send(client,blue2_error,"arduino/blue2_error")
     send(client,isBlue,"arduino/isBlue")
+    send(client,start,"arduino/start")
