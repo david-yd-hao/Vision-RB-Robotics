@@ -22,7 +22,6 @@ def detectaruco(frame,font):
 
     #使用aruco.detectMarkers()函数可以检测到marker，返回ID和标志板的4个角点坐标
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray,aruco_dict,parameters=parameters)
-    print(corners)
     frame = pl.draw_points_xy(frame,[corners[0][0][0]],(255,0,0))
     frame = pl.draw_points_xy(frame,[corners[0][0][1]],(0,0,255))
     first_point = corners[0][0][0]

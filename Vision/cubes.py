@@ -68,12 +68,10 @@ def getcube(blank_img, contours, x_lim, y_lim):
                 a = 0
             if b ==90:
                 b = 0
-            print(a,b)
             if abs(a-b)<60:
                 orientation = (a+b)/2
             elif abs(a-b)>60:
                 orientation = (a + b - 90)/2
-            print(orientation)
 
 
         cube = [[centery + y_lim, centerx + x_lim] , [width,height],orientation]
@@ -86,7 +84,11 @@ def isBlue(pic):
     pic = mk.blue_mask(pic)
     cont = contours.get_contour(pic)
     if cont:
-        return True, pic
+        for i in cont:
+            area = cv2.contourArea(i)
+            if area >= 20:
+                return True, pic
+        return False, pic
     else:
         return False, pic
 
