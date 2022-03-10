@@ -22,20 +22,24 @@ def detectaruco(frame,font):
 
     #使用aruco.detectMarkers()函数可以检测到marker，返回ID和标志板的4个角点坐标
     corners, ids, rejectedImgPoints = aruco.detectMarkers(gray,aruco_dict,parameters=parameters)
-    frame = pl.draw_points_xy(frame,[corners[0][0][0]],(255,0,0))
-    frame = pl.draw_points_xy(frame,[corners[0][0][1]],(0,0,255))
-    first_point = corners[0][0][0]
-    second_point = corners[0][0][1]
-    dx = second_point[0] - first_point[0]
-    dy = first_point[1] - second_point[1]
-    d = np.sqrt(dx**2+dy**2)
-    if dx > 0:
-        edge_rotation = np.arcsin(dy/d)*180/np.pi
-    elif dx <0:
-        edge_rotation = 180 - (np.arcsin(dy/d)*180/np.pi)
-    centerline_rotation = edge_rotation + 90
+    edge_center = None
+    centerline_rotation = None
+    edge_rotation = 0
+    if corners:
+        frame = pl.draw_points_xy(frame,[corners[0][0][0]],(255,0,0))
+        frame = pl.draw_points_xy(frame,[corners[0][0][1]],(0,0,255))
+        first_point = corners[0][0][0]
+        second_point = corners[0][0][1]
+        dx = second_point[0] - first_point[0]
+        dy = first_point[1] - second_point[1]
+        d = np.sqrt(dx**2+dy**2)
+        if dx > 0:
+            edge_rotation = np.arcsin(dy/d)*180/np.pi
+        elif dx <0:
+            edge_rotation = 180 - (np.arcsin(dy/d)*180/np.pi)
+        centerline_rotation = edge_rotation + 90
 
-    edge_center = [int((corners[0][0][0][0]+corners[0][0][1][0])/2), int((corners[0][0][0][1]+corners[0][0][1][1])/2)]
+        edge_center = [int((corners[0][0][0][0]+corners[0][0][1][0])/2), int((corners[0][0][0][1]+corners[0][0][1][1])/2)]
 
 
 #    如果找不打id

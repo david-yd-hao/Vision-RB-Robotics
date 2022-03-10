@@ -56,19 +56,32 @@ def calibrate():
     return K, D, DIM
 
 def undistort_fisheye(img, K=np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]]), D=np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]]), DIM=(1016, 760)):
+    img = rotate_image(img, -3)
     h,w = img.shape[:2]
     cam = np.eye(3)
+    DIM = (int(w * 1.1), int(h * 1.1))
     map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, cam, K, DIM, cv2.CV_16SC2)
     undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_DEFAULT)
+    undistorted_img = undistorted_img[0:816, 90:987]
     return undistorted_img
-
+def undi(img, K=np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]]), D=np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]]), DIM=(1016, 760)):
+    h,w = img.shape[:2]
+    cam = np.eye(3)
+    newcammatrix, _ = cv2.getOptimalNewCameraMatrix(K, D, DIM[::-1], 1, DIM[::-1])
+    return cv2.undistort(img, K, D, None, newcammatrix)
 
 def undistort(img, K=np.array([[637.8931714029114, 0.0, 509.67125143385334], [0.0, 636.4000140079311, 371.2613659540199], [0.0, 0.0, 1.0]]), D=np.array([[-0.02628723220492124], [-0.1740869162806197], [0.11587794888959864], [0.041124156040405195]]), DIM=(1016, 760)):
     return cv2.undistort(img, K, D, None, K)
 # calibrate camera, output parameter, and undistort val.jpg
 
+def rotate_image(image, angle):
+  image_center = tuple(np.array(image.shape[1::-1]) / 2)
+  rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
+  result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
+  return result
 if __name__ == "__main__":
-    K, D, DIM = calibrate()
-    print(K, D, DIM)
-    img = undistort(cv2.imread('val.jpg'), K, D, DIM)
-    cv2.imwrite('val2.png', img)
+    img = cv2.imread("./TestPics/cube/DT_imaged1.png")
+    cv2.imshow("pic", undistort_fisheye(img))
+    img = undistort_fisheye(img)
+    cv2.imwrite("./TestPics/cube/UDT_imaged1.png", img)
+    cv2.waitKey(0)

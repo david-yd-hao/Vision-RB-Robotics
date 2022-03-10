@@ -10,7 +10,7 @@ def red_mask(img, lower=[(0,80,100), (5,255,255)], higher=[(165,80,100), (180,25
     return croped
 
 
-def blue_mask(img, lower=[(100,81,88)], higher=[(140, 121, 155)]):
+def blue_mask(img, lower=[(115,38,148)], higher=[(160, 113, 255)]):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(img_hsv, lower[0], higher[0])
     croped = cv2.bitwise_and(img, img, mask=mask)

@@ -43,5 +43,5 @@ def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBl
     # send(client,red2_error,"arduino/red2_error")
     # send(client,blue1_error,"arduino/blue1_error")
     # send(client,blue2_error,"arduino/blue2_error")
-    send(client,isBlue,"arduino/isBlue")
-    send(client,start,"arduino/start")
+    #send(client,isBlue,"arduino/isBlue")
+    #send(client,start,"arduino/start")

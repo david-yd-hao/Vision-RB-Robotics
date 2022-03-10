@@ -63,8 +63,11 @@ def run():
         i += 1
         ########## image set up and contour
         current_frame = calibrate.undistort_fisheye(get_frame())
+        print(current_frame.shape)
+        cv2.imshow("left", current_frame[597:, 0:210])
+        cv2.imshow("cam2", current_frame)
         if i<= 30:
-            current_frame_isblue = current_frame.copy()[580:759, 60:250]
+            current_frame_isblue = current_frame.copy()[597:, 0:210]
             iblue, pic = cubes.isBlue(current_frame_isblue)
             isBluelist.append(iblue)
         if i == 31:
@@ -79,7 +82,6 @@ def run():
                 bluefinal = True
             else:
                 bluefinal = False
-        if i == 32:
             start = True
         cv2.imshow("ori", current_frame_isblue)
         current_frame_copy = current_frame.copy()
@@ -89,7 +91,7 @@ def run():
         
         ########## cube detection red mask
         # current_frame_left_red = mask.red_mask(current_frame[580:759, 50:250])   ###### y axis from top, x axis from left
-        current_left_red = mask.white_mask(current_frame[580:759, 50:250],lower=[(122,52,91)], higher=[(255, 248, 253)])
+        current_left_red = mask.white_mask(current_frame[597:, 0:210],lower=[(122,52,91)], higher=[(255, 248, 253)])
         cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
 
@@ -98,30 +100,28 @@ def run():
         current_frame = pl.draw_points_yx(img = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
         
         ######### gets and draws cubes on current_frame
-        current_left,_,__ = cubes.getrectbox(current_frame_copy[580:759, 50:250],current_left_contours)
+        current_left,_,__ = cubes.getrectbox(current_frame_copy[597:, 0:210],current_left_contours)
         cube, frame = cubes.getcube(current_frame_copy, current_left_contours, 50, 580)
-        # if cube:
-        #     cube_center = [int(cube[0][1]),int(cube[0][0])]
-        #     current_frame = pl.draw_line_rot(frame, cube_center, 90-cube[2])
+        if cube:
+            cube_center = [int(cube[0][1]),int(cube[0][0])]
 
-        # ######## gets and draws robot aruco detection on current_frame
-        #     current_frame, corners, edge_center, centerline_rotation = ad.detectaruco(current_frame,font)
-        #     if corners:
-        #         current_frame = pl.draw_line_rot(current_frame,edge_center,centerline_rotation)
 
-        ########## image resize
-        # current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
+        ######## gets and draws robot aruco detection on current_frame
+        current_frame, corners, edge_center, centerline_rotation = ad.detectaruco(current_frame,font)
+        if corners:
+            current_frame = pl.draw_line_rot(current_frame,edge_center,centerline_rotation)
+
+        ######### image resize
+        current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         
-        ############# image output
+        ############ image output
         
-        cv2.imshow("frame", pic)
+        cv2.imshow("frame", current_frame)
         # cv2.imshow("whole", current_frame)
         print(bluefinal)
         start = int(start)
-        if bluefinal == True:
-            com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, 1, start)
-        elif bluefinal == False:
-            com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, 0, start)
+        bluefinal = int(bluefinal)
+        com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, bluefinal, start)
         if cv2.waitKey(1) == 27:
             break
         #sleep(0.05)

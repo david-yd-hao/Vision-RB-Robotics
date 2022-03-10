@@ -92,11 +92,11 @@ def isBlue(pic):
     else:
         return False, pic
 
-capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
-x1 = 700
-x2 = 1016
-y1 = 0
-y2 = 150
+# capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
+# x1 = 700
+# x2 = 1016
+# y1 = 0
+# y2 = 150
 
 if __name__ == "__main__":
 
