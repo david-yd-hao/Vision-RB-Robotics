@@ -1,3 +1,4 @@
+from re import X
 import cv2
 import matplotlib.pyplot as plt
 import calibrate
@@ -32,27 +33,33 @@ def plot_colors(hist, centroids):
 	# return the bar chart
 	return bar
 def getboundbox(blank_img, contours):
-
-    blank_img_copy = blank_img.copy()
-    i = 0
-    for i in range(0,len(contours)):
-        rect_para = []
-        x, y, w, h = cv2.boundingRect(contours[i])
-
+	blank_img_copy = blank_img.copy()
+	xt = 0
+	yt = 0
+	wt = 0
+	ht = 0
+	n = 0
+	rect = []
+	for i in range(0,len(contours)):
+		x, y, w, h = cv2.boundingRect(contours[i])
         ##### skip rect too large or too small
-        area = w * h
-        
-        if(area > 150 and area < 500):
-            cv2.rectangle(blank_img_copy,(x,y),(x+w,y+h),(0,255,0),2)
-            i += 1
-
-
-
-    return blank_img_copy, x, y, w, h, i
+		area = w * h
+		if(area > 150 and area < 500):
+			cv2.rectangle(blank_img_copy,(x,y),(x+w,y+h),(0,255,0),2)
+			xt += x
+			yt += y
+			wt += w
+			ht += h
+			n += 1
+	rect.append(int(xt/n))
+	rect.append(int(yt/n))
+	rect.append(int(wt/n))
+	rect.append(int(ht/n))
+	rect.append(n)
+	return blank_img_copy, rect
 img = cv2.imread("./TestPics/cube/DT_imaged1.png")
 img = calibrate.undistort_fisheye(img)
 img = img[600:800, 20:210]
-cv2.imshow("pic", img)
 # img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 # img = img.reshape((img.shape[0] * img.shape[1], 3))
 ###############
@@ -96,8 +103,18 @@ cv2.imshow("pic", img)
 ###################
 cts = get_contour(img)
 blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
-blank_img_copy, x, y, w, h, i= getboundbox(blank_img, cts)
-print(x, y, w, h)
-img = img[y:y + h, x:x + w]
-cv2.imshow("frame", blank_img_copy)
-cv2.waitKey(0)
+blank_img_copy, rect= getboundbox(blank_img, cts)
+[x, y, w, h, i] = rect
+img = img[y:y+h, x:x+w]
+cv2.imshow("pic", img)
+img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+img = img.reshape((img.shape[0] * img.shape[1], 3))
+clt = KMeans(n_clusters = 4)
+clt.fit(img)
+hist = centroid_histogram(clt)
+bar = plot_colors(hist, clt.cluster_centers_)
+# show our color bart
+plt.figure()
+plt.axis("off")
+plt.imshow(bar)
+plt.show()
