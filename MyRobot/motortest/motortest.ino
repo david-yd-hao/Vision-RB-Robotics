@@ -8,10 +8,15 @@ For use with the Adafruit Motor Shield v2
 */
 
 #include <Adafruit_MotorShield.h>
+#define Blue_color_in 2;
+#define Red_color_in 3;
+#define Red_LED_out 6;
+#define Blue_LED_out 5;
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *RMotor = AFMS.getMotor(4);
+Adafruit_DCMotor *LMotor = AFMS.getMotor(3);
+Adafruit_DCMotor *RMotor = AFMS.getMotor(1);
+
 
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
@@ -21,9 +26,15 @@ void setup() {
     while (1);
   }
   Serial.println("Motor Shield found.");
+  pinMode(Blue_color_in, INPUT);
+  pinMode(Red_color_in, INPUT);
+  pinMode(Red_LED_out, OUTPUT);
+  pinMode(Blue_LED_out, OUTPUT);
+
 }
 
 void loop() {
+
   delay(10000);
   LMotor->run(FORWARD);
   RMotor->run(FORWARD);
@@ -32,11 +43,14 @@ void loop() {
   delay(10000);
   LMotor->setSpeed(50);
   RMotor->setSpeed(50);
-  delay(5000);
+  while(digitalRead(Blue_color_in) == 0 && digitalRead(Red_color_in) == 0){
+    continue;
+  }
   LMotor->setSpeed(0);
   RMotor->setSpeed(0);
   LMotor->run(RELEASE);
   RMotor->run(RELEASE);
-  delay(5000);
+  delay(10000);
+  exit(0);
 
 }

@@ -68,15 +68,6 @@ void setup() {
   }
   Serial.println("Motor Shield found.");
 
-
-  // Set the speed to start
-  LMotor->setSpeed(LSpeed);
-  RMotor->setSpeed(RSpeed);
-  LMotor->run(FORWARD);
-  LMotor->run(FORWARD);
-  // turn on motor
-  LMotor->run(RELEASE);
-  RMotor->run(RELEASE);
 }
 
 void onMqttMessage(int messageSize) {
