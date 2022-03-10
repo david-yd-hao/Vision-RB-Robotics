@@ -8,10 +8,10 @@ For use with the Adafruit Motor Shield v2
 */
 
 #include <Adafruit_MotorShield.h>
-#define Blue_color_in 2;
-#define Red_color_in 3;
-#define Red_LED_out 6;
-#define Blue_LED_out 5;
+#define Blue_color_in 2
+#define Red_color_in 3
+#define Red_LED_out 6
+#define Blue_LED_out 5
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *LMotor = AFMS.getMotor(3);
@@ -41,16 +41,17 @@ void loop() {
   LMotor->setSpeed(150);
   RMotor->setSpeed(150);
   delay(10000);
-  LMotor->setSpeed(50);
-  RMotor->setSpeed(50);
-  while(digitalRead(Blue_color_in) == 0 && digitalRead(Red_color_in) == 0){
-    continue;
-  }
-  LMotor->setSpeed(0);
-  RMotor->setSpeed(0);
-  LMotor->run(RELEASE);
-  RMotor->run(RELEASE);
-  delay(10000);
-  exit(0);
+//  LMotor->setSpeed(50);
+//  RMotor->setSpeed(50);
+//  while(digitalRead(Blue_color_in) == 0 && digitalRead(Red_color_in) == 0){
+//    continue;
+//  }
+//  LMotor->setSpeed(0);
+//  RMotor->setSpeed(0);
+//  LMotor->run(RELEASE);
+//  RMotor->run(RELEASE);
+//  delay(10000);
+//  exit(0);
 
+  exit(0);
 }

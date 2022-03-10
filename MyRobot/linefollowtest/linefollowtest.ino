@@ -13,7 +13,7 @@ int sensorXR = A3;
 int sensorVal[4] = {0,0,0,0};  //set up sensor values values in calculation
 int sensor[4] = {0,0,0,0}; 
 int threshold = 200;
-float Kp = 30, Ki = 10, Kd = 1;
+const float Kp = 20, Ki = 5, Kd = 1;
 float error = 0, P = 0, I = 0, D = 0, PID_value = 0;
 float previous_error = 0, previous_I = 0;
 int LSpeed = 150; //set up initial speed
@@ -29,6 +29,8 @@ void setup() {
     while (1);
   }
   Serial.println("Motor Shield found.");
+  LMotor->run(FORWARD);
+  RMotor->run(BACKWARD);
 }
 
 
@@ -74,7 +76,7 @@ void loop() {
 
 
   P = error;
-  I = error + previous_I;
+  I = 0.5*(error + previous_I);
   D = error - previous_error;
   PID_value = (Kp * P) + (Ki * I) + (Kd * D);
   previous_I = I;
