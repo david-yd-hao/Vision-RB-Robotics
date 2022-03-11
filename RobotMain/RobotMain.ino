@@ -8,9 +8,10 @@
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
-int isBluevar = 0, startvar = 0;
-float RobotRotvar = 0;
+char isBlue = 0, start = 0;
+int cubeX = 0, cubeY = 0, robotX = 0, robotY = 0, robotRot = 0, 
 String rob;
+
 void setup() {
   Serial.begin(9600);         //Start serial and set the correct Baud Rate
   while (!Serial) {
@@ -44,22 +45,15 @@ void setup() {
   // set the message receive callback
   mqttClient.onMessage(onMqttMessage);
 
-  Serial.print("Subscribing to topic: ");
-  Serial.println(cube_error);
-  Serial.println();
-
   // subscribe to a topic
   mqttClient.subscribe(RobotX);
   mqttClient.subscribe(RobotY);
+  mqttClient.subscribe(RobotRot);
   mqttClient.subscribe(CubeX);
   mqttClient.subscribe(CubeY);
-  mqttClient.subscribe(RobotRot);
-  mqttClient.subscribe(isBlue);
-  mqttClient.subscribe(start);
+  mqttClient.subscribe(IsBlue);
+  mqttClient.subscribe(Start);
 
-  
-  // topics can be unsubscribed using:
-  // mqttClient.unsubscribe(topic);
 
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");
   if (!AFMS.begin()) {         // create with the default frequency 1.6KHz
@@ -70,22 +64,58 @@ void setup() {
 
 }
 
-void onMqttMessage(int messageSize) {
-  if(mqttClient.messageTopic() == RobotRot){
-    rob = String("");
-    while(mqttClient.available()){
-      char a = (char)mqttClient.read();
-      rob = rob + a;
-    }
-    Serial.println(rob);
-  }
-}
+
 
 void loop(){
   mqttClient.poll();
 }
 
 
-
-
+void onMqttMessage(int messageSize) {
+  if(mqttClient.messageTopic() == RobotX){
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    robotX = rob.toInt();
+    Serial.println(cubeX);
+  }else if(mqttClient.messageTopic() == RobotY){
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    robotY = rob.toInt();
+    Serial.println(rob);
+  }else if(mqttClient.messageTopic() == RobotRot){
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    robotRot = rob.toInt();
+    Serial.println(rob);
+  }else if(mqttClient.messageTopic() == CubeX){
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    cubeX = rob.toInt();
+    Serial.println(rob);
+  }else if(mqttClient.messageTopic() == CubeY){
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    cubeY = rob.toInt();
+    Serial.println(rob);
+  }else if(mqttClient.messageTopic() == IsBlue){
+    isBlue = (char)mqttClient.read();
+  }else if(mqttClient.messageTopic() == Start){
+    start = (char)mqttClient.read();
+  }
+}
   

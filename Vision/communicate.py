@@ -46,8 +46,8 @@ def send_error(robot_x, robot_y, robot_rot, cube_x, cube_y, isBlue, start):
     send(client, robot_rot,'arduino/RobotRot')
     send(client, cube_x,'arduino/CubeX')
     send(client, cube_y,'arduino/CubeY')
-    send(client,isBlue,"arduino/isBlue")
-    send(client,start,"arduino/start")
+    send(client,isBlue,"arduino/IsBlue")
+    send(client,start,"arduino/Start")
 
 
 if __name__ == "__main__":

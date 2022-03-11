@@ -11,16 +11,11 @@ MqttClient mqttClient(wifiClient);
 
 const char broker[] = "10.254.223.22";
 int        port     = 1883;
-const char cube_error[]  = "arduino/cube_error";
-const char cross_error[]  = "arduino/cross_error";
-const char dest1_error[]  = "arduino/dest1_error";
-const char dest2_error[]  = "arduino/dest2_error";
-const char red1_error[]  = "arduino/red1_error";
-const char red2_error[]  = "arduino/red2_error";
-const char blue1_error[]  = "arduino/blue1_error";
-const char blue2_error[]  = "arduino/blue2_error";
-const char isBlue[]  = "arduino/isBlue";
-const char start[]  = "arduino/start";
+const char RobotX[] = "arduino/RobotX";
+const char RobotY[] = "arduino/RobotY";
 const char RobotRot[] = "arduino/RobotRot";
+const char CubeX[] = "arduino/CubeX";
+const char CubeY[] = "arduino/CubeY";
+const char IsBlue[]  = "arduino/IsBlue";
+const char Start[]  = "arduino/Start";
 
-//mqttClient.poll();
