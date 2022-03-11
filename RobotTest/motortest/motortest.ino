@@ -14,8 +14,8 @@ For use with the Adafruit Motor Shield v2
 #define Blue_LED_out 5
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *LMotor = AFMS.getMotor(3);
-Adafruit_DCMotor *RMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
 
 
 void setup() {
@@ -38,7 +38,7 @@ void loop() {
   delay(10000);
   LMotor->run(FORWARD);
   RMotor->run(FORWARD);
-  LMotor->setSpeed(150);
+  LMotor->setSpeed(0);
   RMotor->setSpeed(150);
   delay(10000);
 //  LMotor->setSpeed(50);

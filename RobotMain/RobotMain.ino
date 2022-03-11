@@ -10,9 +10,9 @@ Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
 int isBluevar = 0, startvar = 0;
 float RobotRotvar = 0;
-
+String rob;
 void setup() {
-  Serial.begin(38400);         //Start serial and set the correct Baud Rate
+  Serial.begin(9600);         //Start serial and set the correct Baud Rate
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -24,7 +24,7 @@ void setup() {
     Serial.print(".");
     delay(5000);
   }
-
+ 
   Serial.println("You're connected to the network");
   Serial.println();
 
@@ -49,17 +49,14 @@ void setup() {
   Serial.println();
 
   // subscribe to a topic
-  mqttClient.subscribe(cube_error);
-  mqttClient.subscribe(cross_error);
-  mqttClient.subscribe(dest1_error);
-  mqttClient.subscribe(dest2_error);
-  mqttClient.subscribe(red1_error);
-  mqttClient.subscribe(red2_error);
-  mqttClient.subscribe(blue1_error);
-  mqttClient.subscribe(blue2_error);
+  mqttClient.subscribe(RobotX);
+  mqttClient.subscribe(RobotY);
+  mqttClient.subscribe(CubeX);
+  mqttClient.subscribe(CubeY);
+  mqttClient.subscribe(RobotRot);
   mqttClient.subscribe(isBlue);
   mqttClient.subscribe(start);
-  mqttClient.subscribe(RobotRot);
+
   
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(topic);
@@ -74,22 +71,18 @@ void setup() {
 }
 
 void onMqttMessage(int messageSize) {
-
-  if(mqttClient.messageTopic() == isBlue){
-    isBluevar = (int)mqttClient.read();
-  }
-  if(mqttClient.messageTopic() == start){
-    startvar = (int)mqttClient.read();
-  }
   if(mqttClient.messageTopic() == RobotRot){
-    RobotRotvar = (float)mqttClient.read();
+    rob = String("");
+    while(mqttClient.available()){
+      char a = (char)mqttClient.read();
+      rob = rob + a;
+    }
+    Serial.println(rob);
   }
-
 }
 
 void loop(){
   mqttClient.poll();
-  Serial.println((char)RobotRotvar);
 }
 
 

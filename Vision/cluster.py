@@ -6,6 +6,8 @@ from sklearn.cluster import *
 import numpy as np
 from cubes import *
 from contours import *
+
+
 def centroid_histogram(clt):
 	# grab the number of different clusters and create a histogram
 	# based on the number of pixels assigned to each cluster
