@@ -24,7 +24,7 @@ float visionLineDrive(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float 
 
   LMotor->setSpeed(left_motor_speed);
   RMotor->setSpeed(right_motor_speed);
-  Serial.println(P,output, previous_error, previous_I);
+  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
   return output, previous_error, previous_I;
 }
 
@@ -51,13 +51,13 @@ float visionRotation(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float c
     RMotor->setSpeed(0);
     LMotor->run(RELEASE);
     RMotor->run(RELEASE);
-    Serial.println(P,output, previous_error, previous_I);
+    Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
     return output, previous_error, previous_I;
    }
 
   LMotor->setSpeed(abs(output));
   RMotor->setSpeed(abs(output));
-  Serial.println(P,output, previous_error, previous_I);
+  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
   return output, previous_error, previous_I;
 }
 
@@ -80,12 +80,12 @@ float visionRotWithLeft(Adafruit_DCMotor *LMotor, float current_angle, float set
   }else if(output <= 1 && output >= -1){
     LMotor->setSpeed(0);
     LMotor->run(RELEASE);
-    Serial.println(P,output, previous_error, previous_I);
+    Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
     return output, previous_error, previous_I;
   }
 
   LMotor->setSpeed(abs(output));
-  Serial.println(P,output, previous_error, previous_I);
+  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
   return output, previous_error, previous_I;
 }
 
@@ -108,11 +108,11 @@ float visionRotWithRight(Adafruit_DCMotor *RMotor, float current_angle, float se
   }else if(output <= 1 && output >= -1){
     RMotor->setSpeed(0);
     RMotor->run(RELEASE);
-    Serial.println(P,output, previous_error, previous_I);
+    Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
     return output, previous_error, previous_I;
   }
 
   RMotor->setSpeed(abs(output));
-  Serial.println(P,output, previous_error, previous_I);
+  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
   return output, previous_error, previous_I;
 }

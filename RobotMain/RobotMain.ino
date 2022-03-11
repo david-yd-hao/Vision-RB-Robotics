@@ -8,7 +8,8 @@
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
-
+int isBluevar = 0, startvar = 0;
+float RobotRotvar = 0;
 
 void setup() {
   Serial.begin(38400);         //Start serial and set the correct Baud Rate
@@ -57,6 +58,9 @@ void setup() {
   mqttClient.subscribe(blue1_error);
   mqttClient.subscribe(blue2_error);
   mqttClient.subscribe(isBlue);
+  mqttClient.subscribe(start);
+  mqttClient.subscribe(RobotRot);
+  
   // topics can be unsubscribed using:
   // mqttClient.unsubscribe(topic);
 
@@ -70,24 +74,22 @@ void setup() {
 }
 
 void onMqttMessage(int messageSize) {
-  // we received a message, print out the topic and contents
-  Serial.println("Received a message with topic '");
-  Serial.print(mqttClient.messageTopic());
-  Serial.print("', length ");
-  Serial.print(messageSize);
-  Serial.println(" bytes:");
 
-  // use the Stream interface to print the contents
-  while (mqttClient.available()) {
-    Serial.print((char)mqttClient.read());
+  if(mqttClient.messageTopic() == isBlue){
+    isBluevar = (int)mqttClient.read();
   }
-  Serial.println();
-  Serial.println();
+  if(mqttClient.messageTopic() == start){
+    startvar = (int)mqttClient.read();
+  }
+  if(mqttClient.messageTopic() == RobotRot){
+    RobotRotvar = (float)mqttClient.read();
+  }
+
 }
 
 void loop(){
   mqttClient.poll();
-  
+  Serial.println((char)RobotRotvar);
 }
 
 

@@ -20,5 +20,7 @@ const char red2_error[]  = "arduino/red2_error";
 const char blue1_error[]  = "arduino/blue1_error";
 const char blue2_error[]  = "arduino/blue2_error";
 const char isBlue[]  = "arduino/isBlue";
+const char start[]  = "arduino/start";
+const char RobotRot[] = "arduino/RobotRot";
 
 //mqttClient.poll();

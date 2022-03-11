@@ -96,8 +96,7 @@ def run():
         current_left_contours = contours.get_contour(current_left_red)
 
         ######### draws special points
-        cv2.line(current_frame,(683,197),(315,533),(255,0,0),2)
-        current_frame = pl.draw_points_yx(img = current_frame, coordinate_list=[(55,618),(128,535),(270,833),(349,749)], color = (255, 0, 0))
+        cv2.line(current_frame,(263,540),(591,197),(255,0,0),2)
         
         ######### gets and draws cubes on current_frame
         current_left,_,__ = cubes.getrectbox(current_frame_copy[597:, 0:210],current_left_contours)
@@ -118,11 +117,14 @@ def run():
         
         cv2.imshow("frame", current_frame)
         # cv2.imshow("whole", current_frame)
-        print(bluefinal)
         start = int(start)
         bluefinal = int(bluefinal)
-        com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, bluefinal, start)
+        com.send_error(pic, pic, pic, pic, pic, pic, pic, pic, pic, centerline_rotation, bluefinal, start)
         if cv2.waitKey(1) == 27:
             break
         #sleep(0.05)
     _capture.release()
+
+
+if __name__ == "__main__":
+    run()

@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import cv2
 import arucodetect
 import math
-def connect(client_name = "laptop",host_name = "127.0.0.1"):
+def connect(client_name = "laptop",host_name = "10.254.223.22"):
 
     client =mqtt.Client(client_name)
 
@@ -18,12 +18,12 @@ def receive(client, topic):
     client.subscribe(topic)
     client.on_message = on_message
 if __name__ == "__main__":
-    client = connect(host_name="127.0.0.1")
+    client = connect(host_name="10.254.223.22")
     send(client,"Hello","arduino/")
     receive(client, "arduino/")
-def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBlue, start):
-    client = connect(host_name="127.0.0.1")
-    print('blue' , isBlue , 'start' , start)
+def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, rot, isBlue, start):
+    client = connect(host_name="10.254.223.22")
+    print('rotation', rot, 'blue' , isBlue , 'start' , start)
     # font = cv2.FONT_HERSHEY_SIMPLEX
     # _, _, robo_centre, robo_ang = arucodetect.detectaruco(pic)
     # cube_ang = math.atan2(cube_co[1] - robo_centre[1], cube_co[1] - robo_centre[1])
@@ -43,5 +43,6 @@ def send_error(pic, cube_co, cross, dest1, dest2, red1, red2, blue1, blue2, isBl
     # send(client,red2_error,"arduino/red2_error")
     # send(client,blue1_error,"arduino/blue1_error")
     # send(client,blue2_error,"arduino/blue2_error")
-    #send(client,isBlue,"arduino/isBlue")
-    #send(client,start,"arduino/start")
+    send(client, rot,'arduino/RobotRot')
+    # send(client,isBlue,"arduino/isBlue")
+    # send(client,start,"arduino/start")
