@@ -72,15 +72,37 @@ def getboundbox(blank_img, contours):
 		rect.append(None)
 		rect.append(None)
 	return blank_img_copy, rect
-
-features = []
-labels = []
-for name in glob.glob("./TestPics/cube/*.png"):
-	colour = 0
-	img = cv2.imread(name)
-	name = name.split('\\')[-1]
-	if name[:1] == "B":
-		colour = 1
+def trainSV():
+	features = []
+	labels = []
+	for name in glob.glob("./TestPics/cube/*.png"):
+		colour = 0
+		img = cv2.imread(name)
+		name = name.split('\\')[-1]
+		if name[:1] == "B":
+			colour = 1
+		img = img[600:800, 40:210]
+		img = mk.white_mask(img)
+		cts = get_contour(img)
+		blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
+		blank_img_copy, rect= getboundbox(blank_img, cts)
+		[x, y, w, h, i] = rect
+		img = img[y:y+h, x:x+w]
+		# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
+		# cv2.waitKey(0)
+		img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+		img = img.reshape((img.shape[0] * img.shape[1], 3))
+		clt = KMeans(n_clusters = 3)
+		clt.fit(img)
+		features.append(clt.cluster_centers_)
+		labels.append(colour)
+	sv = SVC(kernel="poly")
+	nsamples, nx, ny = np.array(features).shape
+	features = np.array(features).reshape((nsamples,nx*ny))
+	print(features)
+	sv.fit(features,labels)
+	return sv
+def predictSV(sv, img):
 	img = img[600:800, 40:210]
 	img = mk.white_mask(img)
 	cts = get_contour(img)
@@ -94,35 +116,15 @@ for name in glob.glob("./TestPics/cube/*.png"):
 	img = img.reshape((img.shape[0] * img.shape[1], 3))
 	clt = KMeans(n_clusters = 3)
 	clt.fit(img)
-	features.append(clt.cluster_centers_)
-	labels.append(colour)
-sv = SVC(kernel="poly")
-nsamples, nx, ny = np.array(features).shape
-features = np.array(features).reshape((nsamples,nx*ny))
-print(features)
-sv.fit(features,labels)
-img = cv2.imread("./TestPics/cube/val/BUDT_imaged1.png")
-img = img[600:800, 40:210]
-img = mk.white_mask(img)
-cts = get_contour(img)
-blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
-blank_img_copy, rect= getboundbox(blank_img, cts)
-[x, y, w, h, i] = rect
-img = img[y:y+h, x:x+w]
-# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
-# cv2.waitKey(0)
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-img = img.reshape((img.shape[0] * img.shape[1], 3))
-clt = KMeans(n_clusters = 3)
-clt.fit(img)
-test = []
-for i in clt.cluster_centers_:
-	for j in range(len(i)):
-		test.append(i[j])
-test = [test]
-print(test)
-result = sv.predict(test)
-print(result)
+	test = []
+	for i in clt.cluster_centers_:
+		for j in range(len(i)):
+			test.append(i[j])
+	test = [test]
+	return sv.predict(test)
+# print(test)
+# result = sv.predict(test)
+# print(result)
 
 
 
