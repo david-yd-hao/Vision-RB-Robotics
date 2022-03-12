@@ -17,7 +17,7 @@ def blue_mask(img, lower=[(115,38,148)], higher=[(160, 113, 255)]):
     return croped
 
 
-def white_mask(img, lower=[(0,0,220)], higher=[(120, 120, 255)]):
+def white_mask(img, lower=[(79,54,123)], higher=[(215, 255, 255)]):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(img_hsv, lower[0], higher[0])
     croped = cv2.bitwise_and(img, img, mask=mask)

@@ -1,4 +1,5 @@
-from re import X
+from re import I, X
+from tkinter import N
 import cv2
 import matplotlib.pyplot as plt
 import calibrate
@@ -6,8 +7,12 @@ from sklearn.cluster import *
 import numpy as np
 from cubes import *
 from contours import *
-
-
+import poly
+import mask as mk
+from kneed import knee_locator as kl
+import glob
+from sklearn.svm import SVC
+import matplotlib
 def centroid_histogram(clt):
 	# grab the number of different clusters and create a histogram
 	# based on the number of pixels assigned to each cluster
@@ -46,77 +51,92 @@ def getboundbox(blank_img, contours):
 		x, y, w, h = cv2.boundingRect(contours[i])
         ##### skip rect too large or too small
 		area = w * h
-		if(area > 150 and area < 500):
+		print(area)
+		if(area > 300 and area < 1100):
 			cv2.rectangle(blank_img_copy,(x,y),(x+w,y+h),(0,255,0),2)
 			xt += x
 			yt += y
 			wt += w
 			ht += h
 			n += 1
-	rect.append(int(xt/n))
-	rect.append(int(yt/n))
-	rect.append(int(wt/n))
-	rect.append(int(ht/n))
-	rect.append(n)
+	if n != 0:
+		rect.append(int(xt/n))
+		rect.append(int(yt/n))
+		rect.append(int(wt/n))
+		rect.append(int(ht/n))
+		rect.append(n)
+	else:
+		rect.append(None)
+		rect.append(None)
+		rect.append(None)
+		rect.append(None)
+		rect.append(None)
 	return blank_img_copy, rect
-img = cv2.imread("./TestPics/cube/DT_imaged1.png")
-img = calibrate.undistort_fisheye(img)
-img = img[600:800, 20:210]
-# img=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-# img = img.reshape((img.shape[0] * img.shape[1], 3))
-###############
-# clt = KMeans(n_clusters = 15)
-# clt.fit(img)
-# hist = centroid_histogram(clt)
-# bar = plot_colors(hist, clt.cluster_centers_)
-# # show our color bart
-# plt.figure()
-# plt.axis("off")
-# plt.imshow(bar)
-# plt.show()
-###############
+
+features = []
+labels = []
+for name in glob.glob("./TestPics/cube/*.png"):
+	colour = 0
+	img = cv2.imread(name)
+	name = name.split('\\')[-1]
+	if name[:1] == "B":
+		colour = 1
+	img = img[600:800, 40:210]
+	img = mk.white_mask(img)
+	cts = get_contour(img)
+	blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
+	blank_img_copy, rect= getboundbox(blank_img, cts)
+	[x, y, w, h, i] = rect
+	img = img[y:y+h, x:x+w]
+	# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
+	# cv2.waitKey(0)
+	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+	img = img.reshape((img.shape[0] * img.shape[1], 3))
+	clt = KMeans(n_clusters = 3)
+	clt.fit(img)
+	features.append(clt.cluster_centers_)
+	labels.append(colour)
+sv = SVC(kernel="poly")
+nsamples, nx, ny = np.array(features).shape
+features = np.array(features).reshape((nsamples,nx*ny))
+print(features)
+sv.fit(features,labels)
+img = cv2.imread("./TestPics/cube/val/BUDT_imaged1.png")
+img = img[600:800, 40:210]
+img = mk.white_mask(img)
+cts = get_contour(img)
+blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
+blank_img_copy, rect= getboundbox(blank_img, cts)
+[x, y, w, h, i] = rect
+img = img[y:y+h, x:x+w]
+# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
+# cv2.waitKey(0)
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+img = img.reshape((img.shape[0] * img.shape[1], 3))
+clt = KMeans(n_clusters = 3)
+clt.fit(img)
+test = []
+for i in clt.cluster_centers_:
+	for j in range(len(i)):
+		test.append(i[j])
+test = [test]
+print(test)
+result = sv.predict(test)
+print(result)
+
+
+
+
+
+
+
+
+# show our color bart
 # md=[]
 # for i in range(1,10):
 #   kmeans=KMeans(n_clusters=i)
 #   kmeans.fit(img)
 #   o=kmeans.inertia_
 #   md.append(o)
-# print(md)
-# plt.plot(list(np.arange(1,10)),md)
-# plt.show()
-############
-# img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-# cv2.imshow("pic", img)
-# cv2.waitKey(0)
-# Z = img.reshape((-1,3))
-# Z = np.float32(Z)
-# # define criteria, number of clusters(K) and apply kmeans()
-# criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-# K = 8
-# ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
-# A = Z[label.ravel()==0]
-# B = Z[label.ravel()==1]
-# # Plot the data
-# plt.scatter(A[:,0],A[:,1])
-# plt.scatter(B[:,0],B[:,1],c = 'r')
-# # plt.scatter(center[:,0],center[:,1],s = 80,c = 'y', marker = 's')
-# plt.xlabel('Height'),plt.ylabel('Weight')
-# plt.show()
-###################
-cts = get_contour(img)
-blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
-blank_img_copy, rect= getboundbox(blank_img, cts)
-[x, y, w, h, i] = rect
-img = img[y:y+h, x:x+w]
-cv2.imshow("pic", img)
-img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-img = img.reshape((img.shape[0] * img.shape[1], 3))
-clt = KMeans(n_clusters = 4)
-clt.fit(img)
-hist = centroid_histogram(clt)
-bar = plot_colors(hist, clt.cluster_centers_)
-# show our color bart
-plt.figure()
-plt.axis("off")
-plt.imshow(bar)
-plt.show()
+# kn = kl.KneeLocator(list(np.arange(1,10)), md, curve='convex', direction='decreasing')
+# print(kn.knee)
