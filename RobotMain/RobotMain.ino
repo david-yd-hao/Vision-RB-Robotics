@@ -15,6 +15,7 @@ String rob, str;
 float main_output=0, main_previous_error=0, main_previous_I=0;
 bool toStop = false;
 
+
 void setup() {
   Serial.begin(9600);         //Start serial and set the correct Baud Rate
   while (!Serial) {
@@ -79,15 +80,46 @@ void loop(){
 //  RMotor->setSpeed(0);
 //  }
 
-if(toStop == false){
+while(toStop == false){
     mqttClient.poll();
     robotX = str_robotX.toInt();
     robotY = str_robotY.toInt();
     robotRot = str_robotRot.toInt();
     cubeX = str_cubeX.toInt();
     cubeY = str_cubeY.toInt();
-    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 751, 60, 823, 732, robotX, robotY, main_previous_error, main_previous_I);
-    Serial.println(main_previous_error);
+    main_output, main_previous_error, main_previous_I, toStop = visionRotWithRight(RMotor, robotRot, 275, main_previous_error, main_previous_I);
+}
+LMotor->run(FORWARD);
+RMotor->run(FORWARD);
+toStop = false;
+while(toStop == false){
+  
+    mqttClient.poll();
+    robotX = str_robotX.toInt();
+    robotY = str_robotY.toInt();
+    robotRot = str_robotRot.toInt();
+    cubeX = str_cubeX.toInt();
+    cubeY = str_cubeY.toInt();
+    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 776, 86, 816, 732, robotX, robotY, main_previous_error, main_previous_I);
+}
+LMotor->run(FORWARD);
+RMotor->run(FORWARD);
+toStop = false;
+while(toStop == false){
+    mqttClient.poll();
+    robotX = str_robotX.toInt();
+    robotY = str_robotY.toInt();
+    robotRot = str_robotRot.toInt();
+    cubeX = str_cubeX.toInt();
+    cubeY = str_cubeY.toInt();
+    main_output, main_previous_error, main_previous_I, toStop = visionRotation(LMotor, RMotor, 1.5, robotRot, 180, main_previous_error, main_previous_I);
+}
+LMotor->run(FORWARD);
+RMotor->run(FORWARD);
+toStop = false;
+while(toStop == false){
+    LMotor->setSpeed(255);
+    RMotor->setSpeed(255);
 }
 
 

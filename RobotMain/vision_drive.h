@@ -28,36 +28,35 @@ float visionLineDrive(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float 
 }
 
 
-float visionRotation(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float current_angle, float setpoint_angle, float previous_error, float previous_I){
+float visionRotation(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float lr, float current_angle, float setpoint_angle, float previous_error, float previous_I){
 
   error = setpoint_angle - current_angle;
   P = error;
   I = error + previous_I;
   D = error - previous_error;
-  output = (Kp * P) + (Ki * I) + (Kd * D);
+  output = (4.5 * P) + (0 * I) + (0 * D);
   previous_I = I;
   previous_error = error;
-  constrain(output, 0, 255);
-
-  if(output > 1){
-    LMotor->run(FORWARD);
-    RMotor->run(BACKWARD);
-  }else if(output < 1){
+  output = constrain(output, -255/lr, 255/lr);
+  
+  if(error > 5){
     LMotor->run(BACKWARD);
     RMotor->run(FORWARD);
-  }else if(output <= 1 && output >= -1){
+  }else if(error < -5){
+    LMotor->run(FORWARD);
+    RMotor->run(BACKWARD);
+  }else if(error <= 5 && error >= -5){
     LMotor->setSpeed(0);
     RMotor->setSpeed(0);
     LMotor->run(RELEASE);
     RMotor->run(RELEASE);
-    Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
-    return output, previous_error, previous_I;
+    return output, previous_error, previous_I, true;
    }
 
-  LMotor->setSpeed(abs(output));
-  RMotor->setSpeed(abs(output));
-  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
-  return output, previous_error, previous_I;
+  LMotor->setSpeed(abs((int)(lr*output)));
+  RMotor->setSpeed(abs((int)output));
+  Serial.println(String("left")+output+String("        right")+(-output));
+  return output, previous_error, previous_I, false;
 }
 
 
@@ -67,7 +66,7 @@ float visionRotWithLeft(Adafruit_DCMotor *LMotor, float current_angle, float set
   P = error;
   I = error + previous_I;
   D = error - previous_error;
-  output = (Kp * P) + (Ki * I) + (Kd * D);
+  output = (8 * P) + (0 * I) + (0.5 * D);
   previous_I = I;
   previous_error = error;
   constrain(output, 0, 255);
@@ -94,16 +93,16 @@ float visionRotWithRight(Adafruit_DCMotor *RMotor, float current_angle, float se
   P = error;
   I = error + previous_I;
   D = error - previous_error;
-  output = (8 * P) + (0 * I) + (0.5 * D);
+  output = (10 * P) + (0 * I) + (0 * D);
   previous_I = I;
   previous_error = error;
   constrain(output, 0, 255);
 
-  if(error > 2){
+  if(error > 4){
     RMotor->run(FORWARD);
-  }else if(error < -2){
+  }else if(error < -4){
     RMotor->run(BACKWARD);
-  }else if(error <= 2 && error >= -2){
+  }else if(error <= 4 && error >= -4){
     RMotor->setSpeed(0);
     RMotor->run(RELEASE);
     return output, previous_error, previous_I, true;
@@ -129,7 +128,7 @@ float visionLineFollow(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float
   Serial.println(String("error")+ error +String("        previous_error")+previous_error+String("       d")+D);
   PID_value = (2 * P) + (0 * I);
   PID_value = constrain(PID_value, -55, 55);
-  if((current_x - x2)*(current_x - x2) + (current_y - y2)*(current_y - y2) <= 100){
+  if((current_x - x2)*(current_x - x2) + (current_y - y2)*(current_y - y2) <= 60){
     LMotor->setSpeed(0);
     RMotor->setSpeed(0);
     LMotor->run(RELEASE);
