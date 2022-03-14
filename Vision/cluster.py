@@ -120,8 +120,6 @@ def predictSV(sv, img):
 	blank_img_copy, rect= getboundbox(blank_img, cts)
 	[x, y, w, h, i] = rect
 	img = img[y:y+h, x:x+w]
-	# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
-	# cv2.waitKey(0)
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 	img = img.reshape((img.shape[0] * img.shape[1], 3))
 	clt = KMeans(n_clusters = 3)
@@ -139,7 +137,16 @@ def predictSV(sv, img):
 
 if __name__ == "__main__":
 	sv = trainSV()
-	img = cv2.imread('./TestPics/cube/val/RUDT_imaged11.png')
+	img = cv2.imread('./TestPics/cube/val/RUDT_imaged100.png')
+	# img = img[600:800, 40:210]
+	# img = mk.white_mask(img)
+	# cts = get_contour(img)
+	# blank_img = np.zeros(shape=img.shape, dtype=np.uint8)
+	# blank_img_copy, rect= getboundbox(blank_img, cts)
+	# [x, y, w, h, i] = rect
+	# img = img[y:y+h, x:x+w]
+	# cv2.imshow("pic", cv2.resize(img, (img.shape[1] * 10, img.shape[0] * 10)))
+	# cv2.waitKey(0)
 	result = predictSV(sv,img)
 	print(result)
 

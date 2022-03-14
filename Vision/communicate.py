@@ -1,3 +1,4 @@
+from encodings import utf_8
 from time import sleep
 import paho.mqtt.client as mqtt
 
@@ -41,8 +42,8 @@ def send_error(ip, robot_x, robot_y, robot_rot, cube_x, cube_y, isBlue, start):
     # send(client,red2_error,"arduino/red2_error")
     # send(client,blue1_error,"arduino/blue1_error")
     # send(client,blue2_error,"arduino/blue2_error")
-    send(client, robot_x,'arduino/RobotX')
-    send(client, robot_y,'arduino/RobotY')
+    send(client, str(robot_x).encode(encoding='ascii'),'arduino/RobotX')
+    send(client, str(robot_y).encode(encoding='ascii'),'arduino/RobotY')
     send(client, robot_rot,'arduino/RobotRot')
     send(client, cube_x,'arduino/CubeX')
     send(client, cube_y,'arduino/CubeY')

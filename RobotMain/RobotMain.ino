@@ -6,11 +6,14 @@
 #include "stop.h"
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
-Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
-char isBlue = 0, start = 0;
-int cubeX = 0, cubeY = 0, robotX = 0, robotY = 0, robotRot = 0;
-String rob;
+Adafruit_DCMotor *LMotor = AFMS.getMotor(3);
+Adafruit_DCMotor *RMotor = AFMS.getMotor(4);
+char isBlue, start;
+String str_cubeX, str_cubeY, str_robotX, str_robotY, str_robotRot;
+int cubeX, cubeY, robotX, robotY, robotRot;
+String rob, str;
+float main_output=0, main_previous_error=0, main_previous_I=0;
+bool toStop = false;
 
 void setup() {
   Serial.begin(9600);         //Start serial and set the correct Baud Rate
@@ -62,56 +65,74 @@ void setup() {
   }
   Serial.println("Motor Shield found.");
 
+  LMotor->run(FORWARD);
+  RMotor->run(FORWARD);
 }
 
 
 
 void loop(){
-  mqttClient.poll();
+//  if(toStop == false){
+//    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 313, 736, 804, 741, robotX, robotY, main_previous_error, main_previous_I);
+//  }else{
+//  LMotor->setSpeed(0);
+//  RMotor->setSpeed(0);
+//  }
+
+if(toStop == false){
+    mqttClient.poll();
+    robotX = str_robotX.toInt();
+    robotY = str_robotY.toInt();
+    robotRot = str_robotRot.toInt();
+    cubeX = str_cubeX.toInt();
+    cubeY = str_cubeY.toInt();
+    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 751, 60, 823, 732, robotX, robotY, main_previous_error, main_previous_I);
+    Serial.println(main_previous_error);
 }
 
 
+//  while(!toStop){
+//    mqttClient.poll();
+//    robotX = str_robotX.toInt();
+//    robotY = str_robotY.toInt();
+//    robotRot = str_robotRot.toInt();
+//    cubeX = str_cubeX.toInt();
+//    cubeY = str_cubeY.toInt();
+//    main_output, main_previous_error, main_previous_I, toStop = visionRotWithRight(RMotor, robotRot, 95, main_previous_error, main_previous_I);
+//  }
+}
+
 void onMqttMessage(int messageSize) {
   if(mqttClient.messageTopic() == RobotX){
-    rob = String("");
+    str_robotX = String("");
     while(mqttClient.available()){
       char a = (char)mqttClient.read();
-      rob = rob + a;
+      str_robotX = str_robotX + a;
     }
-    robotX = rob.toInt();
-    Serial.println(cubeX);
   }else if(mqttClient.messageTopic() == RobotY){
-    rob = String("");
+    str_robotY = String("");
     while(mqttClient.available()){
       char a = (char)mqttClient.read();
-      rob = rob + a;
+      str_robotY = str_robotY + a;
     }
-    robotY = rob.toInt();
-    Serial.println(rob);
   }else if(mqttClient.messageTopic() == RobotRot){
-    rob = String("");
+    str_robotRot = String("");
     while(mqttClient.available()){
       char a = (char)mqttClient.read();
-      rob = rob + a;
+      str_robotRot = str_robotRot + a;
     }
-    robotRot = rob.toInt();
-    Serial.println(rob);
   }else if(mqttClient.messageTopic() == CubeX){
-    rob = String("");
+    str_cubeX = String("");
     while(mqttClient.available()){
       char a = (char)mqttClient.read();
-      rob = rob + a;
+      str_cubeX = str_cubeX + a;
     }
-    cubeX = rob.toInt();
-    Serial.println(rob);
   }else if(mqttClient.messageTopic() == CubeY){
-    rob = String("");
+    str_cubeY = String("");
     while(mqttClient.available()){
       char a = (char)mqttClient.read();
-      rob = rob + a;
+      str_cubeY = str_cubeY + a;
     }
-    cubeY = rob.toInt();
-    Serial.println(rob);
   }else if(mqttClient.messageTopic() == IsBlue){
     isBlue = (char)mqttClient.read();
   }else if(mqttClient.messageTopic() == Start){

@@ -89,10 +89,11 @@ def run():
 
         ###### buffer communication
         t2 = datetime.now().timestamp()
-        while(t2 - t_before <= buffer_time):
-            sleep(0.001)
-            t2 = datetime.now().timestamp()
+        # while(t2 - t_before <= buffer_time):
+        #     sleep(0.001)
+        #     t2 = datetime.now().timestamp()
         com.send_error("10.254.223.22", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
+        sleep(0.05)
         t_before = datetime.now().timestamp()
 
         ########### Break Key and Wait for 0.05 sec
