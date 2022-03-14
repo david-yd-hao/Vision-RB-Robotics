@@ -9,7 +9,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *LMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *RMotor = AFMS.getMotor(2);
 char isBlue = 0, start = 0;
-int cubeX = 0, cubeY = 0, robotX = 0, robotY = 0, robotRot = 0, 
+int cubeX = 0, cubeY = 0, robotX = 0, robotY = 0, robotRot = 0;
 String rob;
 
 void setup() {

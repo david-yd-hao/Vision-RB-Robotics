@@ -19,8 +19,8 @@ def receive(client, topic):
     client.on_message = on_message
 
 
-def send_error(robot_x, robot_y, robot_rot, cube_x, cube_y, isBlue, start):
-    client = connect(host_name="10.254.223.22")
+def send_error(ip, robot_x, robot_y, robot_rot, cube_x, cube_y, isBlue, start):
+    client = connect(host_name=ip)
     print('robot_x', robot_x, 'robot_y', robot_y,'robot_rotation', robot_rot, 'cube_x', cube_x, 'cube_y', cube_y, 'blue' , isBlue , 'start' , start)
     # font = cv2.FONT_HERSHEY_SIMPLEX
     # _, _, robo_centre, robo_ang = arucodetect.detectaruco(pic)

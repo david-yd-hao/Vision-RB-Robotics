@@ -9,10 +9,13 @@ from cubes import *
 from contours import *
 import poly
 import mask as mk
-from kneed import knee_locator as kl
 import glob
 from sklearn.svm import SVC
 import matplotlib
+import random
+random.seed(42)
+
+
 def centroid_histogram(clt):
 	# grab the number of different clusters and create a histogram
 	# based on the number of pixels assigned to each cluster
@@ -39,6 +42,8 @@ def plot_colors(hist, centroids):
 	
 	# return the bar chart
 	return bar
+
+
 def getboundbox(blank_img, contours):
 	blank_img_copy = blank_img.copy()
 	xt = 0
@@ -51,7 +56,7 @@ def getboundbox(blank_img, contours):
 		x, y, w, h = cv2.boundingRect(contours[i])
         ##### skip rect too large or too small
 		area = w * h
-		print(area)
+
 		if(area > 300 and area < 1100):
 			cv2.rectangle(blank_img_copy,(x,y),(x+w,y+h),(0,255,0),2)
 			xt += x
@@ -59,6 +64,7 @@ def getboundbox(blank_img, contours):
 			wt += w
 			ht += h
 			n += 1
+			print(area)
 	if n != 0:
 		rect.append(int(xt/n))
 		rect.append(int(yt/n))
@@ -72,13 +78,16 @@ def getboundbox(blank_img, contours):
 		rect.append(None)
 		rect.append(None)
 	return blank_img_copy, rect
+
+
 def trainSV():
 	features = []
 	labels = []
 	for name in glob.glob("./TestPics/cube/*.png"):
+		print(name)
 		colour = 0
 		img = cv2.imread(name)
-		name = name.split('\\')[-1]
+		name = name.split('/')[-1]
 		if name[:1] == "B":
 			colour = 1
 		img = img[600:800, 40:210]
@@ -96,12 +105,13 @@ def trainSV():
 		clt.fit(img)
 		features.append(clt.cluster_centers_)
 		labels.append(colour)
-	sv = SVC(kernel="poly")
+	sv = SVC(kernel="poly", random_state=42)
 	nsamples, nx, ny = np.array(features).shape
 	features = np.array(features).reshape((nsamples,nx*ny))
-	print(features)
+	print(features, labels)
 	sv.fit(features,labels)
 	return sv
+
 def predictSV(sv, img):
 	img = img[600:800, 40:210]
 	img = mk.white_mask(img)
@@ -127,7 +137,11 @@ def predictSV(sv, img):
 # print(result)
 
 
-
+if __name__ == "__main__":
+	sv = trainSV()
+	img = cv2.imread('./TestPics/cube/val/RUDT_imaged11.png')
+	result = predictSV(sv,img)
+	print(result)
 
 
 

@@ -81,20 +81,20 @@ def run():
         current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         
         ############ image output
-        # cv2.imshow("frame", current_frame)
-        # cv2.imshow("left", current_frame_isblue)
+        cv2.imshow("frame", current_frame)
 
         ############ communication with robot
         start = int(start)
         bluefinal = int(bluefinal)
+
         ###### buffer communication
         t2 = datetime.now().timestamp()
         while(t2 - t_before <= buffer_time):
             sleep(0.001)
             t2 = datetime.now().timestamp()
-        com.send_error("127.0.0.1", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
+        com.send_error("10.254.223.22", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
         t_before = datetime.now().timestamp()
-        print(t_before)
+
         ########### Break Key and Wait for 0.05 sec
         if cv2.waitKey(1) == 27:
             break
