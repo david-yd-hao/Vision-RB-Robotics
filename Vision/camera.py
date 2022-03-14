@@ -9,13 +9,14 @@ import cubes as cubes
 import arucodetect as ad
 import communicate as com
 from time import sleep
-
+from datetime import datetime
 
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
 imagenumber = 0
 font = cv2.FONT_HERSHEY_SIMPLEX
+buffer_time = 0.03
 if _capture.isOpened(): 
     _rval, _frame  = _capture.read()
 else:
@@ -40,14 +41,14 @@ def get_frame(copy_=True):
 ########## Main Function
 def run():
 
-    i = 0
     isBluelist = []
     bluefinal = False
     start = False
     
-
+    t_before = datetime.now().timestamp()
     while(True):
-        i += 1
+
+
         cube_center_x = 0
         cube_center_y = 0
         robotedge_center_x = 0
@@ -57,29 +58,9 @@ def run():
         current_frame = calibrate.undistort_fisheye(get_frame())
         current_frame_copy = current_frame.copy()
 
-
-        ######### identify color in the first 31 iterations
-        if i<= 30:
-            current_frame_isblue = current_frame.copy()[597:, 0:210]
-            iblue, pic = cubes.isBlue(current_frame_isblue)
-            isBluelist.append(iblue)
-        if i == 31:
-            blue = 0
-            red = 0
-            for i in isBluelist:
-                if not i:
-                    red += 1
-                if i:
-                    blue += 1
-            if 2 * blue >= red:
-                bluefinal = True
-            else:
-                bluefinal = False
-            start = True
-
        
         ########## cube detection mask contours
-        current_left_red = mask.white_mask(current_frame[597:, 0:210],lower=[(122,52,91)], higher=[(255, 248, 253)])
+        current_left_red = mask.white_mask(img=current_frame[597:, 0:210])#,lower=[(122,52,91)], higher=[(255, 248, 253)]
         cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
         
@@ -100,18 +81,23 @@ def run():
         current_frame = cv2.resize(current_frame, tuple([int(1.5 * current_frame.shape[1]), int(1.5 * current_frame.shape[0])]))
         
         ############ image output
-        cv2.imshow("frame", current_frame)
-        cv2.imshow("left", current_frame_isblue)
+        # cv2.imshow("frame", current_frame)
+        # cv2.imshow("left", current_frame_isblue)
 
         ############ communication with robot
         start = int(start)
         bluefinal = int(bluefinal)
-        com.send_error(robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
-
+        ###### buffer communication
+        t2 = datetime.now().timestamp()
+        while(t2 - t_before <= buffer_time):
+            sleep(0.001)
+            t2 = datetime.now().timestamp()
+        com.send_error("127.0.0.1", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
+        t_before = datetime.now().timestamp()
+        print(t_before)
         ########### Break Key and Wait for 0.05 sec
         if cv2.waitKey(1) == 27:
             break
-        sleep(0.05)
     _capture.release()
 
 

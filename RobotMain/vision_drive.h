@@ -1,5 +1,5 @@
 #include <Adafruit_MotorShield.h>
-
+#include <math.h>
 const float Kp = 20, Ki = 5, Kd = 1;
 float current_angle =0, setpoint_angle = 0;
 float error = 0, P = 0, I = 0, D = 0, PID_value = 0, output = 0;
@@ -113,6 +113,29 @@ float visionRotWithRight(Adafruit_DCMotor *RMotor, float current_angle, float se
   }
 
   RMotor->setSpeed(abs(output));
+  Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
+  return output, previous_error, previous_I;
+}
+
+
+float visionLineFollow(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float x1, float y1, float x2, float y2, float current_x, float current_y, float previous_error, float previous_I){
+  float a = 1.0;
+  float b = (x2 - x1) / (y1 - y2);
+  float c = (x1 * y2 * y2 - x2 * y1 * y2) / (y1 * y1 - y1 * y2);
+  error = (a * current_x + b * current_y + c) / sqrt(a * a + b * b);
+  P = error;
+  I = error + previous_I;
+  D = error - previous_error;
+  PID_value = (Kp * P) + (Ki * I) + (Kd * D);
+  previous_I = I;
+  previous_error = error;
+  int left_motor_speed = LSpeed - PID_value;
+  int right_motor_speed = RSpeed + PID_value;
+  constrain(left_motor_speed, 0, 255);
+  constrain(right_motor_speed, 0, 255);
+
+  LMotor->setSpeed(left_motor_speed);
+  RMotor->setSpeed(right_motor_speed);
   Serial.println((char)P+(char)output+(char)previous_error+(char)previous_I);
   return output, previous_error, previous_I;
 }
