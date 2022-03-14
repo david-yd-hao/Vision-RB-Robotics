@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     font = cv2.FONT_HERSHEY_SIMPLEX #font for displaying text (below)
 
-    frame = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Vision/TestPics/aruco/UDT_imaged4.png')
+    frame = cv2.imread('/Users/davidhao/GitProject/CamProject/Vision-RB-Robotics/Vision/UDT_imaged1.png')
     frame, corners, edge_center, centerline_rotation = detectaruco(frame,font)
     print(edge_center)
     print(centerline_rotation)
