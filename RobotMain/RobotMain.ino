@@ -68,70 +68,57 @@ void setup() {
 
   LMotor->run(FORWARD);
   RMotor->run(FORWARD);
+  attach_servo();
 }
 
 
 
 void loop(){
-//  if(toStop == false){
-//    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 313, 736, 804, 741, robotX, robotY, main_previous_error, main_previous_I);
-//  }else{
-//  LMotor->setSpeed(0);
-//  RMotor->setSpeed(0);
-//  }
-
-while(toStop == false){
-    mqttClient.poll();
-    robotX = str_robotX.toInt();
-    robotY = str_robotY.toInt();
-    robotRot = str_robotRot.toInt();
-    cubeX = str_cubeX.toInt();
-    cubeY = str_cubeY.toInt();
-    main_output, main_previous_error, main_previous_I, toStop = visionRotWithRight(RMotor, robotRot, 275, main_previous_error, main_previous_I);
-}
-LMotor->run(FORWARD);
-RMotor->run(FORWARD);
-toStop = false;
-while(toStop == false){
   
-    mqttClient.poll();
-    robotX = str_robotX.toInt();
-    robotY = str_robotY.toInt();
-    robotRot = str_robotRot.toInt();
-    cubeX = str_cubeX.toInt();
-    cubeY = str_cubeY.toInt();
-    main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 776, 86, 816, 732, robotX, robotY, main_previous_error, main_previous_I);
-}
-LMotor->run(FORWARD);
-RMotor->run(FORWARD);
-toStop = false;
-while(toStop == false){
-    mqttClient.poll();
-    robotX = str_robotX.toInt();
-    robotY = str_robotY.toInt();
-    robotRot = str_robotRot.toInt();
-    cubeX = str_cubeX.toInt();
-    cubeY = str_cubeY.toInt();
-    main_output, main_previous_error, main_previous_I, toStop = visionRotation(LMotor, RMotor, 1.5, robotRot, 180, main_previous_error, main_previous_I);
-}
-LMotor->run(FORWARD);
-RMotor->run(FORWARD);
-toStop = false;
-while(toStop == false){
-    LMotor->setSpeed(255);
-    RMotor->setSpeed(255);
-}
+  delay(1000)
 
+  openClaw();
+  while(toStop == false){
+      mqttClient.poll();
+      robotX, robotY, robotRot, cubeX, cubeY = manyInts(str_robotX, str_robotY, str_robotRot, str_cubeX, str_cubeY);
+      main_output, main_previous_error, main_previous_I, toStop = visionRotWithRight(RMotor, robotRot, 275, main_previous_error, main_previous_I);
+  }
+  
+  LMotor->run(FORWARD);
+  RMotor->run(FORWARD);
+  toStop = false;
+  
+  while(toStop == false){
+    
+      mqttClient.poll();
+      robotX, robotY, robotRot, cubeX, cubeY = manyInts(str_robotX, str_robotY, str_robotRot, str_cubeX, str_cubeY);
+      main_output, main_previous_error, main_previous_I, toStop = visionLineFollow(LMotor, RMotor, 776, 86, 816, 732, robotX, robotY, main_previous_error, main_previous_I);
+  }
+  
+  LMotor->run(FORWARD);
+  RMotor->run(FORWARD);
+  toStop = false;
+  
+  while(toStop == false){
+      mqttClient.poll();
+      robotX, robotY, robotRot, cubeX, cubeY = manyInts(str_robotX, str_robotY, str_robotRot, str_cubeX, str_cubeY);
+      main_output, main_previous_error, main_previous_I, toStop = visionRotation(LMotor, RMotor, 1.5, robotRot, 180, main_previous_error, main_previous_I);
+  }
+  
+  LMotor->run(FORWARD);
+  RMotor->run(FORWARD);
+  toStop = false;
+  
+  while(toStop == false){
+      LMotor->setSpeed(255);
+      RMotor->setSpeed(255);
+  }
+  
+  LMotor->run(FORWARD);
+  RMotor->run(FORWARD);
+  toStop = false;
 
-//  while(!toStop){
-//    mqttClient.poll();
-//    robotX = str_robotX.toInt();
-//    robotY = str_robotY.toInt();
-//    robotRot = str_robotRot.toInt();
-//    cubeX = str_cubeX.toInt();
-//    cubeY = str_cubeY.toInt();
-//    main_output, main_previous_error, main_previous_I, toStop = visionRotWithRight(RMotor, robotRot, 95, main_previous_error, main_previous_I);
-//  }
+  
 }
 
 void onMqttMessage(int messageSize) {
