@@ -39,7 +39,7 @@ void loop() {
   LMotor->run(FORWARD);
   RMotor->run(FORWARD);
   LMotor->setSpeed(0);
-  RMotor->setSpeed(150);
+  RMotor->setSpeed(0);
   delay(10000);
 //  LMotor->setSpeed(50);
 //  RMotor->setSpeed(50);

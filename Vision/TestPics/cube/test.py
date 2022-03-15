@@ -25,10 +25,10 @@ def sharpen(img):
     img = cv2.filter2D(src=img, ddepth = -1, kernel = kernel)
     return img
 def f(hMin ,hMax ,Smin,Smax ,Vmin,Vmax):
-    img1 = cv2.imread('DT_imaged1.png')
+    img1 = cv2.imread('RUDT_imaged16.png')
     img1 = undistort_fisheye(img1)
 
-    img1 = img1[597:, 0:210]
+    img1 = img1[600:, 0:210]
     img = cv2.cvtColor(img1 ,cv2.COLOR_BGR2RGB)  #in matplot image show in rgb format in cv2 it show in bgr format remeber this else you will face problem
     hsv = cv2.cvtColor(img,cv2.COLOR_RGB2HSV)# if you are going to use cv2 to show image then cv2.COLOR_BGR2HSV 
     Lhsv = np.array([hMin,Smin,Vmin])

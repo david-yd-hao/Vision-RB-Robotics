@@ -2,8 +2,8 @@
 
 Servo servo_claw;
 
-const int servo_claw_port = 9; // inner one 9
-const int pos_open = 180, pos_closed = 90;
+const int servo_claw_port = 10;
+const int pos_open = 100, pos_closed = 40;
 
 // the following functions give combinations of the servo position and movements
 

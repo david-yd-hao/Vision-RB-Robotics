@@ -19,7 +19,6 @@ const char CubeY[] = "arduino/CubeY";
 const char IsBlue[]  = "arduino/IsBlue";
 const char Start[]  = "arduino/Start";
 
-void manyInts(String a, String b, String c, String d, String e){
-  return a.toInt(), b.toInt(), c.toInt(), d.toInt(), e.toInt()
+int manyInts(String a, String b, String c, String d, String e){
+  return a.toInt(), b.toInt(), c.toInt(), d.toInt(), e.toInt();
 }
-

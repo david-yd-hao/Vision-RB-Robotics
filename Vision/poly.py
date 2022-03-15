@@ -67,6 +67,5 @@ def draw_line_rot(img, coordinate, rot, color = (0, 255, 0)):
     dx = int(50 * np.cos(rot))
     dy = int(50 * np.sin(rot))
     ending_point = [coordinate[0]+dx,coordinate[1]-dy]
-    print(ending_point)
     img = cv2.line(img, starting_point, ending_point, color = color, thickness = 2)
     return img

@@ -60,7 +60,7 @@ def run():
 
        
         ########## cube detection mask contours
-        current_left_red = mask.white_mask(img=current_frame[597:, 0:210])#,lower=[(122,52,91)], higher=[(255, 248, 253)]
+        current_left_red = mask.white_mask(img=current_frame[597:, 0:210], lower=[(121, 58, 144)], higher=[(255, 194, 251)])
         cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
         
@@ -92,7 +92,7 @@ def run():
         while(t2 - t_before <= buffer_time):
             sleep(0.001)
             t2 = datetime.now().timestamp()
-        com.send_error("127.0.0.1", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
+        com.send_error("10.254.223.22", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
         t_before = datetime.now().timestamp()
 
         ########### Break Key and Wait for 0.05 sec
