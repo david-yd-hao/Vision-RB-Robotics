@@ -117,7 +117,7 @@ void loop(){
     if(robotX == 0 || robotY == 0){
        continue;
      }
-     main_output = visionLineFollowUltra(LMotor, RMotor, 1.5, spx1, spy1, 810, 732, robotX, robotY);
+     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, 810, 732, robotX, robotY);
      toStop = ultraStop(LMotor, RMotor, 10);
    }
   
@@ -155,11 +155,11 @@ void loop(){
      if(robotX == 0 || robotY == 0){
        continue;
      }
-     main_output, toStop = visionLineFollow(LMotor, RMotor, 1.5, spx1, spy1, 270, 700, robotX, robotY);
+     main_output, toStop = visionLineFollow(LMotor, RMotor, 8, spx1, spy1, 270, 700, robotX, robotY);
    }
 
   
-   // rotate to face cube
+   // Actively rotate to face cube
    LMotor->run(FORWARD);
    RMotor->run(FORWARD);
    toStop = false;
@@ -185,12 +185,15 @@ void loop(){
    int cube_angle = (int)getAngle(robotX, robotY, cubeX, cubeY);
   //  Serial.print(String("cubeX:")+cubeX+String("        cubeY:")+cubeY+String("       Angle:")+cube_angle);
    while(toStop == false){
-     mqttClient.poll();
-     robotRot = str_robotRot.toInt();
-     if(robotRot == 0){
+      mqttClient.poll();
+      robotX = str_robotX.toInt();
+      robotY = str_robotY.toInt();
+      robotRot = str_robotRot.toInt();
+      if(robotRot == 0 || robotX == 0 || robotY ==0){
        continue;
-     }
-     main_output, toStop = visionRotation(LMotor, RMotor, 3, 1, robotRot, cube_angle);
+      }  
+      cube_angle = (int)getAngle(robotX, robotY, cubeX, cubeY);
+      main_output, toStop = visionRotation(LMotor, RMotor, 3, 1, robotRot, cube_angle);
    }
 
    delay(1000);
@@ -217,7 +220,7 @@ void loop(){
        continue;
      }
      robotRot = str_robotRot.toInt();
-     main_output = visionLineFollowColor(LMotor, RMotor, 1.5, spx1, spy1, cubeX, cubeY, robotX, robotY);
+     main_output = visionLineFollowColor(LMotor, RMotor, 8, spx1, spy1, cubeX, cubeY, robotX, robotY);
     red_or_blue, toStop = colorStop(LMotor, RMotor);    
    }
    
@@ -334,7 +337,7 @@ void loop(){
     if(robotX == 0 || robotY == 0){
        continue;
      }
-     main_output = visionLineFollowUltra(LMotor, RMotor, 1.5, spx1, spy1, corner_x, corner_y, robotX, robotY);
+     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, corner_x, corner_y, robotX, robotY);
      toStop = ultraStop(LMotor, RMotor, 10);
    }
 
@@ -403,7 +406,7 @@ void loop(){
     if(robotX == 0 || robotY == 0){
        continue;
      }
-     main_output = visionLineFollowUltra(LMotor, RMotor, 1.5, spx1, spy1, ramp_x, ramp_y, robotX, robotY);
+     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, ramp_x, ramp_y, robotX, robotY);
      toStop = ultraStop(LMotor, RMotor, 20);
    }
 
@@ -504,7 +507,7 @@ void loop(){
     if(robotX == 0 || robotY == 0){
        continue;
      }
-     main_output = visionLineFollowUltra(LMotor, RMotor, 1.5, spx1, spy1, origin_x, origin_y, robotX, robotY);
+     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, origin_x, origin_y, robotX, robotY);
      toStop = ultraStop(LMotor, RMotor, 50);
    }
    
