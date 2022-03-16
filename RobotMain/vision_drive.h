@@ -6,17 +6,22 @@ int LSpeed = 200; //initial speed
 int RSpeed = 200;
 
 
-float visionRotation(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, int kp, float lr, float current_angle, float setpoint_angle){
+float visionRotation(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float kp, float lr, float current_angle, float setpoint_angle){
 
-  error = setpoint_angle - current_angle;
+  if(setpoint_angle == 360 && current_angle < 180){
+    error = 0 - current_angle;
+    }else if(setpoint_angle == 360 && current_angle > 180){
+    error = 360 - current_angle;
+  }else if(setpoint_angle != 360){
+    error = setpoint_angle - current_angle;
+  }
+  
   if(error>0){
 output = kp * error * error;
-//      output = kp * error / (1 + abs(error));
   }else if(error<0){
 output = -kp * error * error;
-//     output = kp * error / (1 + abs(error));
 }
-  output = constrain(output, -255/lr, 255/lr);
+  output = constrain(output, -180/lr, 180/lr);
   Serial.println(String("erorr    ") + error);
   if(error > 4){
     LMotor->run(BACKWARD);
@@ -39,7 +44,7 @@ output = -kp * error * error;
 }
 
 
-float visionRotWithLeft(Adafruit_DCMotor *LMotor, int kp, float current_angle, float setpoint_angle){
+float visionRotWithLeft(Adafruit_DCMotor *LMotor, float kp, float current_angle, float setpoint_angle){
 
   error = setpoint_angle - current_angle;
   if(error>0){
@@ -47,13 +52,13 @@ float visionRotWithLeft(Adafruit_DCMotor *LMotor, int kp, float current_angle, f
   }else if(error<0){
     output = -kp * error * error;
   }
-  output = constrain(output, -255, 255);
+  output = constrain(output, -180, 180);
   
-  if(output > 3){
+  if(output > 4){
     LMotor->run(BACKWARD);
-  }else if(output < -3){
+  }else if(output < -4){
     LMotor->run(FORWARD);
-  }else if(output <= 3 && output >= -3){
+  }else if(output <= 4 && output >= -4){
     LMotor->setSpeed(0);
     LMotor->run(RELEASE);
     return output, true;
@@ -66,20 +71,20 @@ float visionRotWithLeft(Adafruit_DCMotor *LMotor, int kp, float current_angle, f
 }
 
 
-float visionRotWithRight(Adafruit_DCMotor *RMotor, int kp, float current_angle, float setpoint_angle){
+float visionRotWithRight(Adafruit_DCMotor *RMotor, float kp, float current_angle, float setpoint_angle){
   error = setpoint_angle - current_angle;
   if(error>0){
     output = kp * error * error;
   }else if(error<0){
     output = -kp * error * error;
   }
-  output = constrain(output, -255, 255);
+  output = constrain(output, -180, 180);
 
-  if(error > 3){
+  if(error > 4){
     RMotor->run(FORWARD);
-  }else if(error < -3){
+  }else if(error < -4){
     RMotor->run(BACKWARD);
-  }else if(error <= 3 && error >= -3){
+  }else if(error <= 4 && error >= -4){
     RMotor->setSpeed(0);
     RMotor->run(RELEASE);
     return output, true;

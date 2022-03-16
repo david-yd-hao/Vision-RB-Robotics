@@ -3,6 +3,8 @@
 #define echoPin 12
 #define red_Sensor_Port 3
 #define blue_Sensor_Port 2
+#define red_LED_Port 6
+#define blue_LED_Port 5
 
 // Define variables:
 long duration;
@@ -52,6 +54,8 @@ bool ultraStop(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor, float target)
 void colorSetup(){
     pinMode(red_Sensor_Port, INPUT);
     pinMode(blue_Sensor_Port, INPUT);
+    pinMode(red_LED_Port, OUTPUT);
+    pinMode(blue_LED_Port, OUTPUT);
 }
 
 
@@ -73,4 +77,14 @@ bool colorStop(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor){
     }else{
         return 0, false;
     }
+}
+
+void blueLED(){
+  digitalWrite(blue_LED_Port, HIGH);
+  digitalWrite(red_LED_Port, LOW);
+}
+
+void redLED(){
+  digitalWrite(blue_LED_Port, LOW);
+  digitalWrite(red_LED_Port, HIGH);
 }

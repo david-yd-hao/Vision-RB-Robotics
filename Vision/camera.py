@@ -10,7 +10,8 @@ import arucodetect as ad
 import communicate as com
 from time import sleep
 from datetime import datetime
-
+from joblib import load
+from cluster import predictSV
 ########## select camera
 _capture = cv2.VideoCapture("http://localhost:8081/stream/video.mjpeg")
 _capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
@@ -40,12 +41,13 @@ def get_frame(copy_=True):
 
 ########## Main Function
 def run():
-
-    isBluelist = []
+    filename = "svmodel.joblib"
+    sv = load(filename)
     bluefinal = False
     start = False
-    
-    t_before = datetime.now().timestamp()
+    isBlue = 0
+
+    shot = False
     while(True):
 
 
@@ -56,16 +58,22 @@ def run():
 
         ########## image set up
         current_frame = calibrate.undistort_fisheye(get_frame())
+        if shot == False:
+            imgblue = current_frame
+            isBlue = predictSV(sv, imgblue)[0]
+            shot = True
+            print(isBlue)
+
         current_frame_copy = current_frame.copy()
 
        
         ########## cube detection mask contours
-        current_left_red = mask.white_mask(img=current_frame[597:, 10:210], lower=[(121, 58, 144)], higher=[(255, 194, 251)])
+        current_left_red = mask.white_mask(img=current_frame[597:, 30:210], lower=[(121, 58, 144)], higher=[(255, 194, 251)])
         cv2.imshow('left',current_left_red)
         current_left_contours = contours.get_contour(current_left_red)
         
         ######### gets and draws cubes on current_frame
-        cube, current_frame = cubes.getcube(current_frame, current_left_contours, 0, 597)
+        cube, current_frame = cubes.getcube(current_frame, current_left_contours, 30, 597)
         if cube:
             cube_center_x = int(cube[0][1])
             cube_center_y = int(cube[0][0])
@@ -85,15 +93,15 @@ def run():
 
         ############ communication with robot
         start = int(start)
-        bluefinal = int(bluefinal)
 
         ###### buffer communication
-        t2 = datetime.now().timestamp()
-        while(t2 - t_before <= buffer_time):
-            sleep(0.001)
-            t2 = datetime.now().timestamp()
-        com.send_error("127.0.0.1", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, bluefinal, start)
+        # t2 = datetime.now().timestamp()
+        # while(t2 - t_before <= buffer_time):
+        #     sleep(0.001)
+        #     t2 = datetime.now().timestamp()
+        com.send_error("10.254.223.22", robotedge_center_x, robotedge_center_y, int(robot_rotation), cube_center_x, cube_center_y, int(isBlue), start)
         t_before = datetime.now().timestamp()
+        sleep(0.003)
 
         ########### Break Key and Wait for 0.05 sec
         if cv2.waitKey(1) == 27:
