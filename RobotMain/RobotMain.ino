@@ -86,79 +86,80 @@ void loop(){
 
    // GO GET THE CUBE FIRST (20pts)
    // initial rotation to corner
-   while(toStop == false){
-     mqttClient.poll();
-     robotRot = str_robotRot.toInt();
-     if(robotRot == 0){
-       continue;
-     }
-     main_output, toStop = visionRotWithRight(RMotor, 5, robotRot, 270);
-   }
-  
+//   while(toStop == false){
+//     mqttClient.poll();
+//     robotRot = str_robotRot.toInt();
+//     if(robotRot == 0){
+//       continue;
+//     }
+//     main_output, toStop = visionRotWithRight(RMotor, 3, robotRot, 270);
+//   }
+//  
+//
+//  // goes to corner
+//   LMotor->run(FORWARD);
+//   RMotor->run(FORWARD);
+//   toStop = false;
+//   while(true){
+//      mqttClient.poll();
+//      robotX = str_robotX.toInt();
+//      robotY = str_robotY.toInt();
+//      if(robotX != 0 && robotY != 0){
+//        break;  
+//      }
+//   }
+//   int spx1 = robotX;
+//   int spy1 = robotY;
+//   while(toStop == false){
+//     mqttClient.poll();
+//     robotX = str_robotX.toInt();
+//     robotY = str_robotY.toInt();
+//    if(robotX == 0 || robotY == 0){
+//       continue;
+//     }
+//     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, 810, 732, robotX, robotY);
+//     toStop = ultraStop(LMotor, RMotor, 10);
+//   }
+//  
+//  // rotation at corner
+//   LMotor->run(FORWARD);
+//   RMotor->run(FORWARD);
+//   toStop = false;
+//   while(toStop == false){
+//     mqttClient.poll();
+//     robotRot = str_robotRot.toInt();
+//     if(robotRot == 0){
+//       continue;
+//     }
+//     main_output, toStop = visionRotation(LMotor, RMotor, 1.5, 1.5, robotRot, 180);
+//   }
+//  
+//  // goes fowards to near cube position
+//   LMotor->run(FORWARD);
+//   RMotor->run(FORWARD);
+//   toStop = false;
+//   while(true){
+//      mqttClient.poll();
+//      robotX = str_robotX.toInt();
+//      robotY = str_robotY.toInt();
+//      if(robotX != 0 && robotY != 0){
+//        break;  
+//      }
+//   }
+//   spx1 = robotX;
+//   spy1 = robotY;
+//   while(toStop == false){
+//     mqttClient.poll();
+//     robotX = str_robotX.toInt();
+//     robotY = str_robotY.toInt();
+//     if(robotX == 0 || robotY == 0){
+//       continue;
+//     }
+//     main_output, toStop = visionLineFollow(LMotor, RMotor, 8, spx1, spy1, 270, 700, robotX, robotY, 120);
+//   }
 
-  // goes to corner
-   LMotor->run(FORWARD);
-   RMotor->run(FORWARD);
-   toStop = false;
-   while(true){
-      mqttClient.poll();
-      robotX = str_robotX.toInt();
-      robotY = str_robotY.toInt();
-      if(robotX != 0 && robotY != 0){
-        break;  
-      }
-   }
-   int spx1 = robotX;
-   int spy1 = robotY;
-   while(toStop == false){
-     mqttClient.poll();
-     robotX = str_robotX.toInt();
-     robotY = str_robotY.toInt();
-    if(robotX == 0 || robotY == 0){
-       continue;
-     }
-     main_output = visionLineFollowUltra(LMotor, RMotor, 8, spx1, spy1, 810, 732, robotX, robotY);
-     toStop = ultraStop(LMotor, RMotor, 10);
-   }
-  
-  // rotation at corner
-   LMotor->run(FORWARD);
-   RMotor->run(FORWARD);
-   toStop = false;
-   while(toStop == false){
-     mqttClient.poll();
-     robotRot = str_robotRot.toInt();
-     if(robotRot == 0){
-       continue;
-     }
-     main_output, toStop = visionRotation(LMotor, RMotor, 3, 1.5, robotRot, 180);
-   }
-  
-  // goes fowards to near cube position
-   LMotor->run(FORWARD);
-   RMotor->run(FORWARD);
-   toStop = false;
-   while(true){
-      mqttClient.poll();
-      robotX = str_robotX.toInt();
-      robotY = str_robotY.toInt();
-      if(robotX != 0 && robotY != 0){
-        break;  
-      }
-   }
-   spx1 = robotX;
-   spy1 = robotY;
-   while(toStop == false){
-     mqttClient.poll();
-     robotX = str_robotX.toInt();
-     robotY = str_robotY.toInt();
-     if(robotX == 0 || robotY == 0){
-       continue;
-     }
-     main_output, toStop = visionLineFollow(LMotor, RMotor, 8, spx1, spy1, 270, 700, robotX, robotY);
-   }
-
-  
+    int spx1;
+    int spy1;
    // Actively rotate to face cube
    LMotor->run(FORWARD);
    RMotor->run(FORWARD);
@@ -183,7 +184,7 @@ void loop(){
        }
    }
    int cube_angle = (int)getAngle(robotX, robotY, cubeX, cubeY);
-  //  Serial.print(String("cubeX:")+cubeX+String("        cubeY:")+cubeY+String("       Angle:")+cube_angle);
+  Serial.print(String("cubeX:")+cubeX+String("        cubeY:")+cubeY+String("       Angle:")+cube_angle);
    while(toStop == false){
       mqttClient.poll();
       robotX = str_robotX.toInt();
@@ -193,7 +194,7 @@ void loop(){
        continue;
       }  
       cube_angle = (int)getAngle(robotX, robotY, cubeX, cubeY);
-      main_output, toStop = visionRotation(LMotor, RMotor, 3, 1, robotRot, cube_angle);
+      main_output, toStop = visionRotation(LMotor, RMotor, 1, 1, robotRot, cube_angle);
    }
 
    delay(1000);
@@ -220,8 +221,9 @@ void loop(){
        continue;
      }
      robotRot = str_robotRot.toInt();
-     main_output = visionLineFollowColor(LMotor, RMotor, 8, spx1, spy1, cubeX, cubeY, robotX, robotY);
-    red_or_blue, toStop = colorStop(LMotor, RMotor);    
+//     main_output = visionLineFollowColor(LMotor, RMotor, 8, spx1, spy1, cubeX, cubeY, robotX, robotY);
+//    red_or_blue, toStop = colorStop(LMotor, RMotor);    
+    main_output, toStop = visionLineFollow(LMotor, RMotor, 6, spx1, spy1, cubeX, cubeY, robotX, robotY, 450);
    }
    
    // wait for the light indicator

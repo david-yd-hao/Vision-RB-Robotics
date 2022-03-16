@@ -35,11 +35,11 @@ void setup() {
 
 void loop() {
 
-  delay(10000);
+  delay(1000);
   LMotor->run(FORWARD);
   RMotor->run(FORWARD);
-  LMotor->setSpeed(0);
-  RMotor->setSpeed(0);
+  LMotor->setSpeed(200);
+  RMotor->setSpeed(200);
   delay(10000);
 //  LMotor->setSpeed(50);
 //  RMotor->setSpeed(50);
