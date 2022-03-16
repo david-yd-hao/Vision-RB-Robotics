@@ -11,7 +11,7 @@ bool lineSensorStop(Adafruit_DCMotor *LMotor, Adafruit_DCMotor *RMotor){
   Serial.print(sensorValue0);
   Serial.print("        Right = ");
   Serial.println(sensorValue1);
-  if(sensorValue0 < 200 && sensorValue1 < 200){
+  if(sensorValue0 < 400 && sensorValue1 < 400){
       LMotor->setSpeed(0);
       RMotor->setSpeed(0);
       LMotor->run(RELEASE);
