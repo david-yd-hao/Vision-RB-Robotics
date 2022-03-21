@@ -1,6 +1,6 @@
 // Define Trig and Echo pin:
-#define trigPin 13
-#define echoPin 12
+#define trigPin 9
+#define echoPin 8
 #define red_Sensor_Port 3
 #define blue_Sensor_Port 2
 #define red_LED_Port 6
